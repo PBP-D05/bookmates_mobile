@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-// DONE TODO: Impor drawer yang sudah dibuat sebelumnya
-import 'package:melody_mementos/widgets/left_drawer.dart';
+//import 'package:bookmates_mobile/widgets/left_drawer.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'dart:convert';
-import 'package:melody_mementos/screens/menu.dart';
+//import 'package:bookmates_mobile/screens/menu.dart';
 
 
 class ShopFormPage extends StatefulWidget {
@@ -54,7 +53,7 @@ class _ShopFormPageState extends State<ShopFormPage> {
                                 ),
                                 onChanged: (String? value) {
                                 setState(() {
-                                    _name = value!;
+                                    _judul = value!;
                                 });
                                 },
                                 validator: (String? value) {
@@ -77,12 +76,12 @@ class _ShopFormPageState extends State<ShopFormPage> {
                                 ),
                                 onChanged: (String? value) {
                                 setState(() {
-                                    _artist = value!;
+                                    _author = value!;
                                 });
                                 },
                                 validator: (String? value) {
                                 if (value == null || value.isEmpty) {
-                                    return "Artis tidak boleh kosong!";
+                                    return "Penulis tidak boleh kosong!";
                                 }
                                 return null;
                                 },
@@ -90,36 +89,63 @@ class _ShopFormPageState extends State<ShopFormPage> {
                             ),
                             Padding(
                                 padding: const EdgeInsets.all(8.0),
-                                child: TextFormField(
-                                    decoration: InputDecoration(
-                                    hintText: "Jumlah",
-                                    labelText: "Jumlah",
-                                    border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(5.0),
+                                child: Row (
+                                    children: [
+                                            TextFormField(
+                                        decoration: InputDecoration(
+                                        hintText: "Recommended age",
+                                        labelText: "from",
+                                        border: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(5.0),
+                                        ),
+                                        ),
+                                        onChanged: (String? value) {
+                                        setState(() {
+                                            _min_age = int.parse(value!);
+                                        });
+                                        },
+                                        validator: (String? value) {
+                                        if (value == null || value.isEmpty) {
+                                            return "Please enter recommended age!";
+                                        }
+                                        if (int.tryParse(value) == null) {
+                                            return "Recommended age must be a number!";
+                                        }
+                                        return null;
+                                        },
                                     ),
+                                           TextFormField(
+                                        decoration: InputDecoration(
+                                        hintText: "Recommended age",
+                                        labelText: "until",
+                                        border: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(5.0),
+                                        ),
+                                        ),
+                                        onChanged: (String? value) {
+                                        setState(() {
+                                            _max_age = int.parse(value!);
+                                        });
+                                        },
+                                        validator: (String? value) {
+                                        if (value == null || value.isEmpty) {
+                                            return "Please enter recommended age!";
+                                        }
+                                        if (int.tryParse(value) == null) {
+                                            return "Recommended age must be a number!";
+                                        }
+                                        return null;
+                                        },
                                     ),
-                                    onChanged: (String? value) {
-                                    setState(() {
-                                        _amount = int.parse(value!);
-                                    });
-                                    },
-                                    validator: (String? value) {
-                                    if (value == null || value.isEmpty) {
-                                        return "Jumlah tidak boleh kosong!";
-                                    }
-                                    if (int.tryParse(value) == null) {
-                                        return "Jumlah harus berupa angka!";
-                                    }
-                                    return null;
-                                    },
-                                ),
+                                    ]
+                                )
                             ),
                             Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: TextFormField(
                                     decoration: InputDecoration(
-                                    hintText: "Deskripsi",
-                                    labelText: "Deskripsi",
+                                    hintText: "Description",
+                                    labelText: "Description",
                                     border: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(5.0),
                                     ),
@@ -131,7 +157,7 @@ class _ShopFormPageState extends State<ShopFormPage> {
                                     },
                                     validator: (String? value) {
                                     if (value == null || value.isEmpty) {
-                                        return "Deskripsi tidak boleh kosong!";
+                                        return "Please enter book description!";
                                     }
                                     return null;
                                     },
@@ -148,21 +174,21 @@ class _ShopFormPageState extends State<ShopFormPage> {
                                         ),
                                         onPressed: () async {
                                             if (_formKey.currentState!.validate()) {
-                                                // Kirim ke Django dan tunggu respons
-                                                // TODO: Ganti URL dan jangan lupa tambahkan trailing slash (/) di akhir URL!
                                                 final response = await request.postJson(
-                                                "http://localhost:8000/create-flutter/",
+                                                "http://localhost:8000/add-book-flutter/",
                                                 jsonEncode(<String, String>{
-                                                    'name': _name,
-                                                    'artist': _artist,
-                                                    'amount': _amount.toString(),
+                                                    'judul': _name,
+                                                    'author': _artist,
+                                                    'min_age': _min_age.toString(),
+                                                    'max_age': _max_age.toString(),
+                                                    'image_url': _image_url,
                                                     'description': _description,
-                                                    // TODO: Sesuaikan field data sesuai dengan aplikasimu
+                                                    
                                                 }));
                                                 if (response['status'] == 'success') {
                                                     ScaffoldMessenger.of(context)
                                                         .showSnackBar(const SnackBar(
-                                                    content: Text("Item baru berhasil disimpan!"),
+                                                    content: Text("Buku baru berhasil disimpan!"),
                                                     ));
                                                     Navigator.pushReplacement(
                                                         context,
@@ -178,7 +204,7 @@ class _ShopFormPageState extends State<ShopFormPage> {
                                             }
                                         },
                                         child: const Text(
-                                            "Save",
+                                            "Tambahkan",
                                             style: TextStyle(color: Colors.white),
                                         ),
                                     ),
