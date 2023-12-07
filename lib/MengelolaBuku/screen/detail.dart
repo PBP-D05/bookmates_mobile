@@ -69,11 +69,39 @@ class Detail extends StatelessWidget {
               const SizedBox(height: 20),
 
               ElevatedButton(
-                onPressed: () {
-                    
-                }
-                child: Text('Delete Book')
-              ),
+                child: Icon(
+                    Icons.delete,
+                    size: 20.0,
+                ),
+                style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all(Colors.indigo),
+                ),
+                onPressed: () async {
+                        final response = await request.postJson(
+                        "http://localhost:8000/remove-book-flutter/",
+                        jsonEncode(<String, String>{
+                            'pk': snapshot.data![index].pk.toString(),
+
+                        }));
+                        if (response['status'] == 'success') {
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(const SnackBar(
+                            content: Text("Item berhasil dihapus!"),
+                            ));
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(builder: (context) => BookPage()),
+                            );
+                        } else {
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(const SnackBar(
+                                content:
+                                    Text("Terdapat kesalahan, silakan coba lagi."),
+                            ));
+                        }
+                    }
+              )
             ],
           ),
           )

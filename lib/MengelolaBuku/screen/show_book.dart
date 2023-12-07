@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:bookmates_mobile/models/book.dart';
-import 'package:bookmates_mobile/widgets/left_drawer.dart';
+import 'package:bookmates_mobile/models/buku.dart';
+//import 'package:bookmates_mobile/widgets/left_drawer.dart';
 import 'package:bookmates_mobile/MengelolaBuku/screen/detail.dart';
 
 
@@ -17,7 +17,7 @@ class _BookPageState extends State<BookPage> {
 Future<List<Book>> fetchProduct() async {
     // TODO: Ganti URL dan jangan lupa tambahkan trailing slash (/) di akhir URL!
     var url = Uri.parse(
-        'http://localhost:8000/json/');
+        'http://localhost:8000/editbuku/show-book-flutter/');
     var response = await http.get(
         url,
         headers: {"Content-Type": "application/json"},
@@ -127,6 +127,42 @@ Widget build(BuildContext context) {
                                                         ),
                                                     );
                                                 ],
+                                            ),
+
+
+                                            ElevatedButton(
+                                                child: Icon(
+                                                    Icons.delete,
+                                                    size: 20.0,
+                                                ),
+                                                style: ButtonStyle(
+                                                    backgroundColor:
+                                                        MaterialStateProperty.all(Colors.indigo),
+                                                ),
+                                                onPressed: () async {
+                                                        final response = await request.postJson(
+                                                        "http://localhost:8000/remove-book-flutter/",
+                                                        jsonEncode(<String, String>{
+                                                            'pk': snapshot.data![index].pk.toString(),
+                    
+                                                        }));
+                                                        if (response['status'] == 'success') {
+                                                            ScaffoldMessenger.of(context)
+                                                                .showSnackBar(const SnackBar(
+                                                            content: Text("Item berhasil dihapus!"),
+                                                            ));
+                                                            Navigator.pushReplacement(
+                                                                context,
+                                                                MaterialPageRoute(builder: (context) => BookPage()),
+                                                            );
+                                                        } else {
+                                                            ScaffoldMessenger.of(context)
+                                                                .showSnackBar(const SnackBar(
+                                                                content:
+                                                                    Text("Terdapat kesalahan, silakan coba lagi."),
+                                                            ));
+                                                        }
+                                                    }
                                             )
 
                                             // const SizedBox(height: 10),
