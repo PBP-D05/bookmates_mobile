@@ -4,9 +4,9 @@ import 'dart:convert';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:bookmates_mobile/models/buku.dart';
-//import 'package:bookmates_mobile/widgets/left_drawer.dart';
 import 'package:bookmates_mobile/MengelolaBuku/screen/detail.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:bookmates_mobile/Ratings/widget/appbar.dart';
 
 
 class BookPage extends StatefulWidget {
@@ -45,7 +45,7 @@ Widget build(BuildContext context) {
     final request = context.watch<CookieRequest>();
 
     Future<List<Buku>> response = request
-        .postJson("http://localhost:8000/editbuku/show-book-flutter/",
+        .postJson("http://127.0.0.1:8000/editbuku/show-book-flutter/",
             jsonEncode(<String, String>{"Content-Type": "application/json"}))
         .then((value) {
       if (value == null) {
@@ -62,9 +62,7 @@ Widget build(BuildContext context) {
     });
 
     return Scaffold(
-        appBar: AppBar(
-        title: const Text('Your Works'),
-        ),
+        appBar: myAppBar("My Works"),
         //drawer: const LeftDrawer(),
         body: FutureBuilder(
             future: response,
@@ -99,9 +97,9 @@ Widget build(BuildContext context) {
                                             children: [
 
                                             Text(
-                                                "${snapshot.data![index].fields.judul}",
+                                                "${snapshot.data![index].fields.judul}".toUpperCase(),
                                                 style: const TextStyle(
-                                                fontSize: 18.0,
+                                                fontSize: 35.0,
                                                 fontWeight: FontWeight.bold,
                                                 color: Color(0xFF45425A),
                                                 ),
@@ -111,7 +109,7 @@ Widget build(BuildContext context) {
                                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                 children: [
                                                     Image.network(
-                                                        snapshot.data![index].fields.image_url,
+                                                        snapshot.data![index].fields.imageUrl,
                                                         // width: 200.0, // adjust the width as needed
                                                         // height: 200.0, // adjust the height as needed
                                                         // fit: BoxFit.cover, // adjust the BoxFit as needed
@@ -120,16 +118,16 @@ Widget build(BuildContext context) {
                                                         children:[
                                                             Text("Author: ${snapshot.data![index].fields.author}",
                                                                 style: const TextStyle(
-                                                                fontSize: 14.0,
+                                                                fontSize: 20.0,
                                                                 color: Color(0xFF45425A),
                                                                 ),
                                                             ),
                                                             Text(
-                                                                snapshot.data![index].fields.max_age == 99
-                                                                    ? "Recommended age: ${snapshot.data![index].fields.min_age}+ years"
-                                                                    : "Recommended age: ${snapshot.data![index].fields.min_age} - ${snapshot.data![index].fields.max_age} years",
+                                                                snapshot.data![index].fields.maxAge == 99 ? 
+                                                                    "Recommended age: ${snapshot.data![index].fields.minAge}+ years"
+                                                                    : "Recommended age: ${snapshot.data![index].fields.minAge} - ${snapshot.data![index].fields.maxAge} years",
                                                                 style: const TextStyle(
-                                                                fontSize: 14.0,
+                                                                fontSize: 20.0,
                                                                 color: Color(0xFF45425A),
                                                                 ),
                                                             ),
@@ -152,15 +150,16 @@ Widget build(BuildContext context) {
                                             ElevatedButton(
                                                 child: Icon(
                                                     Icons.delete,
-                                                    size: 20.0,
+                                                    size: 40.0,
+                                                    color: Colors.white,
                                                 ),
                                                 style: ButtonStyle(
                                                     backgroundColor:
-                                                        MaterialStateProperty.all(Colors.indigo),
+                                                        MaterialStateProperty.all(Colors.pink.shade400),
                                                 ),
                                                 onPressed: () async {
                                                         final response = await request.postJson(
-                                                        "http://localhost:8000/remove-book-flutter/",
+                                                        "http://127.0.0.1:8000/editbuku/remove-book-flutter/",
                                                         jsonEncode(<String, String>{
                                                             'pk': snapshot.data![index].pk.toString(),
                     
@@ -195,11 +194,11 @@ Widget build(BuildContext context) {
                                         judul: snapshot.data![index].fields.judul,
                                         author: snapshot.data![index].fields.author,
                                         bookRating: snapshot.data![index].fields.rating,
-                                        num_of_rating: snapshot.data![index].fields.num_of_rating.toString(),
-                                        min_age: snapshot.data![index].fields.min_age.toString(),
-                                        max_age: snapshot.data![index].fields.max_age.toString(),
-                                        image_url: snapshot.data![index].fields.image_url,
-                                        description: snapshot.data![index].fields.description,
+                                        num_of_rating: snapshot.data![index].fields.numOfRating.toString(),
+                                        min_age: snapshot.data![index].fields.minAge.toString(),
+                                        max_age: snapshot.data![index].fields.maxAge.toString(),
+                                        image_url: snapshot.data![index].fields.imageUrl,
+                                        description: snapshot.data![index].fields.desc,
                                         )
                                     )
                                     );

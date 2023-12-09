@@ -4,6 +4,7 @@ import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'dart:convert';
 import 'package:bookmates_mobile/MengelolaBuku/screen/show_book.dart';
+import 'package:bookmates_mobile/Ratings/widget/appbar.dart';
 
 class Detail extends StatelessWidget {
   final String pk;
@@ -32,9 +33,7 @@ class Detail extends StatelessWidget {
   Widget build(BuildContext context) {
     final request = context.watch<CookieRequest>();
     return Scaffold(
-        appBar: AppBar(
-          title: const Text("Book's Detail"),
-        ),
+        appBar: myAppBar("Book's Detail"),
         body: Container(
           margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           padding: const EdgeInsets.all(20.0),
@@ -45,9 +44,9 @@ class Detail extends StatelessWidget {
               children: [
 
               Text(
-                  "$judul",
+                  "$judul".toUpperCase(),
                   style: const TextStyle(
-                  fontSize: 18.0,
+                  fontSize: 40.0,
                   fontWeight: FontWeight.bold,
                   color: Color(0xFF45425A),
                   ),
@@ -66,7 +65,7 @@ class Detail extends StatelessWidget {
                           children:[
                               Text("Author: $author",
                                   style: const TextStyle(
-                                  fontSize: 14.0,
+                                  fontSize: 20.0,
                                   color: Color(0xFF45425A),
                                   ),
                               ),
@@ -75,7 +74,7 @@ class Detail extends StatelessWidget {
                                       ? "Recommended age: $min_age+ years"
                                       : "Recommended age: $min_age - $max_age years",
                                   style: const TextStyle(
-                                  fontSize: 14.0,
+                                  fontSize: 20.0,
                                   color: Color(0xFF45425A),
                                   ),
                               ),
@@ -89,9 +88,15 @@ class Detail extends StatelessWidget {
                                       color: Colors.amber,
                                   ),
                               ),
+                              Text("Amount of Reviewers: $num_of_rating",
+                                  style: const TextStyle(
+                                  fontSize: 20.0,
+                                  color: Color(0xFF45425A),
+                                  ),
+                              ),
                               Text("Description: $description",
                                   style: const TextStyle(
-                                  fontSize: 14.0,
+                                  fontSize: 20.0,
                                   color: Color(0xFF45425A),
                                   ),
                               ),
@@ -104,18 +109,18 @@ class Detail extends StatelessWidget {
               ElevatedButton(
                   child: Icon(
                       Icons.delete,
-                      size: 20.0,
+                      size: 40.0,
+                      color: Colors.white,
                   ),
                   style: ButtonStyle(
                       backgroundColor:
-                          MaterialStateProperty.all(Colors.indigo),
+                          MaterialStateProperty.all(Colors.pink.shade400),
                   ),
                   onPressed: () async {
                           final response = await request.postJson(
-                          "http://localhost:8000/remove-book-flutter/",
+                          "http://127.0.0.1:8000/editbuku/remove-book-flutter/",
                           jsonEncode(<String, String>{
                               'pk': pk.toString(),
-
                           }));
                           if (response['status'] == 'success') {
                               ScaffoldMessenger.of(context)

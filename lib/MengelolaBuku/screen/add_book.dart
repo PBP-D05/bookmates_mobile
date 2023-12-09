@@ -4,6 +4,7 @@ import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'dart:convert';
 import 'package:bookmates_mobile/MengelolaBuku/screen/show_book.dart';
+import 'package:bookmates_mobile/Ratings/widget/appbar.dart';
 //import 'package:bookmates_mobile/screens/menu.dart';
 
 
@@ -25,17 +26,8 @@ class _BookFormPageState extends State<BookFormPage> {
     @override
     Widget build(BuildContext context) {
         final request = context.watch<CookieRequest>();
-        print(request.loggedIn);
         return Scaffold(
-            appBar: AppBar(
-                title: const Center(
-                child: Text(
-                    'Adding New Books',
-                ),
-                ),
-                backgroundColor: Colors.indigo,
-                foregroundColor: Colors.white,
-            ),
+            appBar: myAppBar("Adding New Books"),
             //drawer: const LeftDrawer(),
             body: Form(
                 key: _formKey,
@@ -97,8 +89,8 @@ class _BookFormPageState extends State<BookFormPage> {
                                             width: 200.0,
                                             child: TextFormField(
                                                 decoration: InputDecoration(
-                                                hintText: "Recommended age",
-                                                labelText: "from",
+                                                hintText: "from",
+                                                labelText: "Recommended age",
                                                 border: OutlineInputBorder(
                                                     borderRadius: BorderRadius.circular(5.0),
                                                 ),
@@ -123,8 +115,8 @@ class _BookFormPageState extends State<BookFormPage> {
                                             width: 200.0,
                                             child: TextFormField(
                                                 decoration: InputDecoration(
-                                                hintText: "Recommended age",
-                                                labelText: "until",
+                                                hintText: "until",
+                                                labelText: "Recommended age",
                                                 border: OutlineInputBorder(
                                                     borderRadius: BorderRadius.circular(5.0),
                                                 ),
@@ -132,6 +124,7 @@ class _BookFormPageState extends State<BookFormPage> {
                                                 onChanged: (String? value) {
                                                 setState(() {
                                                     _maxAge = int.parse(value!);
+
                                                 });
                                                 },
                                                 validator: (String? value) {
@@ -205,8 +198,9 @@ class _BookFormPageState extends State<BookFormPage> {
                                         ),
                                         onPressed: () async {
                                             if (_formKey.currentState!.validate()) {
+                                                
                                                 final response = await request.postJson(
-                                                "http://localhost:8000/editbuku/add-book-flutter/",
+                                                "http://127.0.0.1:8000/editbuku/add-book-flutter/",
                                                 jsonEncode(<String, String>{
                                                     'judul': _judul,
                                                     'author': _author,
