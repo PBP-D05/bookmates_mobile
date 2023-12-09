@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 //import 'package:inventory_mobile/screens/register.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
+import 'package:bookmates_mobile/DashboardUser/screen/dashboard.dart';
 
 
 void main() {
@@ -89,10 +90,16 @@ class _LoginPageState extends State<LoginPage> {
                                         context,
                                         MaterialPageRoute(builder: (context) => MyHomePage()),// Dashboard
                                     );*/
+                                    context.read<UserProvider>().setLoggedInUserName(uname);
+
                                     ScaffoldMessenger.of(context)
                                         ..hideCurrentSnackBar()
                                         ..showSnackBar(
                                             SnackBar(content: Text("$message Selamat datang, $uname.")));
+                                     Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => DashboardPage()),
+                    );
                                     } else {
                                     showDialog(
                                         context: context,
@@ -111,6 +118,7 @@ class _LoginPageState extends State<LoginPage> {
                                         ),
                                     );
                                 }
+                               
                             },
                             child: const Text('Login'),
                         ),

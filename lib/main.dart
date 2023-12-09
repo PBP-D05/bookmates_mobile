@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
                     colorScheme: ColorScheme.fromSeed(seedColor: Colors.pink.shade200),
                     useMaterial3: true,
                 ),
-                home: DashboardPage()),
+                home: HomeScreen()),
             );
     }
 }
