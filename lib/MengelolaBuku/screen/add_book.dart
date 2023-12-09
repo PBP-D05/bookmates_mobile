@@ -3,38 +3,40 @@ import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'dart:convert';
+import 'package:bookmates_mobile/MengelolaBuku/screen/show_book.dart';
 //import 'package:bookmates_mobile/screens/menu.dart';
 
 
-class ShopFormPage extends StatefulWidget {
-    const ShopFormPage({super.key});
+class BookFormPage extends StatefulWidget {
+    const BookFormPage({super.key});
 
     @override
-    State<ShopFormPage> createState() => _ShopFormPageState();
+    State<BookFormPage> createState() => _BookFormPageState();
 }
 
-class _ShopFormPageState extends State<ShopFormPage> {
+class _BookFormPageState extends State<BookFormPage> {
     final _formKey = GlobalKey<FormState>();
     String _judul = "";
     String _author = "";
-    int _min_age = 0;
-    int _max_age = 0;
-    String _image_url = "";
+    int _minAge = 0;
+    int _maxAge = 0;
+    String _imageUrl = "";
     String _description = "";
     @override
     Widget build(BuildContext context) {
         final request = context.watch<CookieRequest>();
+        print(request.loggedIn);
         return Scaffold(
             appBar: AppBar(
                 title: const Center(
                 child: Text(
-                    'Form Tambah Item',
+                    'Adding New Books',
                 ),
                 ),
                 backgroundColor: Colors.indigo,
                 foregroundColor: Colors.white,
             ),
-            drawer: const LeftDrawer(),
+            //drawer: const LeftDrawer(),
             body: Form(
                 key: _formKey,
                 child: SingleChildScrollView(
@@ -45,8 +47,8 @@ class _ShopFormPageState extends State<ShopFormPage> {
                             padding: const EdgeInsets.all(8.0),
                             child: TextFormField(
                                 decoration: InputDecoration(
-                                hintText: "Judul Buku",
-                                labelText: "Judul Buku",
+                                hintText: "Book Title",
+                                labelText: "Book Title",
                                 border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(5.0),
                                 ),
@@ -58,7 +60,7 @@ class _ShopFormPageState extends State<ShopFormPage> {
                                 },
                                 validator: (String? value) {
                                 if (value == null || value.isEmpty) {
-                                    return "Judul tidak boleh kosong!";
+                                    return "Please enter the title of the book!";
                                 }
                                 return null;
                                 },
@@ -68,8 +70,8 @@ class _ShopFormPageState extends State<ShopFormPage> {
                             padding: const EdgeInsets.all(8.0),
                             child: TextFormField(
                                 decoration: InputDecoration(
-                                hintText: "Penulis",
-                                labelText: "Penulis",
+                                hintText: "Author",
+                                labelText: "Author",
                                 border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(5.0),
                                 ),
@@ -81,7 +83,7 @@ class _ShopFormPageState extends State<ShopFormPage> {
                                 },
                                 validator: (String? value) {
                                 if (value == null || value.isEmpty) {
-                                    return "Penulis tidak boleh kosong!";
+                                    return "Please enter author's name!";
                                 }
                                 return null;
                                 },
@@ -91,54 +93,83 @@ class _ShopFormPageState extends State<ShopFormPage> {
                                 padding: const EdgeInsets.all(8.0),
                                 child: Row (
                                     children: [
-                                            TextFormField(
-                                        decoration: InputDecoration(
-                                        hintText: "Recommended age",
-                                        labelText: "from",
-                                        border: OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(5.0),
+                                        SizedBox(
+                                            width: 200.0,
+                                            child: TextFormField(
+                                                decoration: InputDecoration(
+                                                hintText: "Recommended age",
+                                                labelText: "from",
+                                                border: OutlineInputBorder(
+                                                    borderRadius: BorderRadius.circular(5.0),
+                                                ),
+                                                ),
+                                                onChanged: (String? value) {
+                                                setState(() {
+                                                    _minAge = int.parse(value!);
+                                                });
+                                                },
+                                                validator: (String? value) {
+                                                if (value == null || value.isEmpty) {
+                                                    return "Please enter recommended age!";
+                                                }
+                                                if (int.tryParse(value) == null) {
+                                                    return "Recommended age must be a number!";
+                                                }
+                                                return null;
+                                                },
+                                            )
                                         ),
+                                        SizedBox(
+                                            width: 200.0,
+                                            child: TextFormField(
+                                                decoration: InputDecoration(
+                                                hintText: "Recommended age",
+                                                labelText: "until",
+                                                border: OutlineInputBorder(
+                                                    borderRadius: BorderRadius.circular(5.0),
+                                                ),
+                                                ),
+                                                onChanged: (String? value) {
+                                                setState(() {
+                                                    _maxAge = int.parse(value!);
+                                                });
+                                                },
+                                                validator: (String? value) {
+                                                if (value == null || value.isEmpty) {
+                                                    return "Please enter recommended age!";
+                                                }
+                                                if (int.tryParse(value) == null) {
+                                                    return "Recommended age must be a number!";
+                                                }
+                                                return null;
+                                                },
+                                            )
                                         ),
-                                        onChanged: (String? value) {
-                                        setState(() {
-                                            _min_age = int.parse(value!);
-                                        });
-                                        },
-                                        validator: (String? value) {
-                                        if (value == null || value.isEmpty) {
-                                            return "Please enter recommended age!";
-                                        }
-                                        if (int.tryParse(value) == null) {
-                                            return "Recommended age must be a number!";
-                                        }
-                                        return null;
-                                        },
-                                    ),
-                                           TextFormField(
-                                        decoration: InputDecoration(
-                                        hintText: "Recommended age",
-                                        labelText: "until",
-                                        border: OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(5.0),
-                                        ),
-                                        ),
-                                        onChanged: (String? value) {
-                                        setState(() {
-                                            _max_age = int.parse(value!);
-                                        });
-                                        },
-                                        validator: (String? value) {
-                                        if (value == null || value.isEmpty) {
-                                            return "Please enter recommended age!";
-                                        }
-                                        if (int.tryParse(value) == null) {
-                                            return "Recommended age must be a number!";
-                                        }
-                                        return null;
-                                        },
-                                    ),
                                     ]
                                 )
+                            ),
+                            Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: TextFormField(
+                                decoration: InputDecoration(
+                                hintText: "Book Cover",
+                                labelText: "Book Cover",
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(5.0),
+                                ),
+                                ),
+                                onChanged: (String? value) {
+                                setState(() {
+                                    _imageUrl = value!;
+                                });
+                                },
+                                validator: (String? value) {
+                                if (value == null || value.isEmpty) {
+                                    return "Please enter url of book cover!";
+                                }
+                                return null;
+                                },
+                            ),
                             ),
                             Padding(
                                 padding: const EdgeInsets.all(8.0),
@@ -175,36 +206,36 @@ class _ShopFormPageState extends State<ShopFormPage> {
                                         onPressed: () async {
                                             if (_formKey.currentState!.validate()) {
                                                 final response = await request.postJson(
-                                                "http://localhost:8000/add-book-flutter/",
+                                                "http://localhost:8000/editbuku/add-book-flutter/",
                                                 jsonEncode(<String, String>{
-                                                    'judul': _name,
-                                                    'author': _artist,
-                                                    'min_age': _min_age.toString(),
-                                                    'max_age': _max_age.toString(),
-                                                    'image_url': _image_url,
+                                                    'judul': _judul,
+                                                    'author': _author,
+                                                    'min_age': _minAge.toString(),
+                                                    'max_age': _maxAge.toString(),
+                                                    'image_url': _imageUrl,
                                                     'description': _description,
                                                     
                                                 }));
                                                 if (response['status'] == 'success') {
                                                     ScaffoldMessenger.of(context)
                                                         .showSnackBar(const SnackBar(
-                                                    content: Text("Buku baru berhasil disimpan!"),
+                                                    content: Text("Book added successfully!"),
                                                     ));
                                                     Navigator.pushReplacement(
                                                         context,
-                                                        MaterialPageRoute(builder: (context) => MyHomePage()),
+                                                        MaterialPageRoute(builder: (context) => BookPage()),
                                                     );
                                                 } else {
                                                     ScaffoldMessenger.of(context)
                                                         .showSnackBar(const SnackBar(
                                                         content:
-                                                            Text("Terdapat kesalahan, silakan coba lagi."),
+                                                            Text("We ran into a problem, please try again."),
                                                     ));
                                                 }
                                             }
                                         },
                                         child: const Text(
-                                            "Tambahkan",
+                                            "Add",
                                             style: TextStyle(color: Colors.white),
                                         ),
                                     ),

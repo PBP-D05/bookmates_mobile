@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 //import 'package:inventory_mobile/screens/register.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
+import 'package:bookmates_mobile/MengelolaBuku/screen/add_book.dart';
 
 
 void main() {
@@ -85,10 +86,10 @@ class _LoginPageState extends State<LoginPage> {
                                 if (request.loggedIn) {
                                     String message = response['message'];
                                     String uname = response['username'];
-                                    /* Navigator.pushReplacement(
+                                    Navigator.pushReplacement(
                                         context,
-                                        MaterialPageRoute(builder: (context) => MyHomePage()),// Dashboard
-                                    );*/
+                                        MaterialPageRoute(builder: (context) => BookFormPage()),// Dashboard
+                                    );
                                     ScaffoldMessenger.of(context)
                                         ..hideCurrentSnackBar()
                                         ..showSnackBar(
