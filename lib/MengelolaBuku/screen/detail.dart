@@ -34,78 +34,114 @@ class Detail extends StatelessWidget {
           padding: const EdgeInsets.all(20.0),
           child: Center(
             child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+
               Text(
-                judul,
-                style: const TextStyle(
+                  "$judul",
+                  style: const TextStyle(
                   fontSize: 18.0,
                   fontWeight: FontWeight.bold,
-                ),
+                  color: Color(0xFF45425A),
+                  ),
               ),
 
-            //   const SizedBox(height: 20),
+              Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                      Image.network(
+                          image_url,
+                          // width: 200.0, // adjust the width as needed
+                          // height: 200.0, // adjust the height as needed
+                          // fit: BoxFit.cover, // adjust the BoxFit as needed
+                      ),
+                      Column(
+                          children:[
+                              Text("Author: $author",
+                                  style: const TextStyle(
+                                  fontSize: 14.0,
+                                  color: Color(0xFF45425A),
+                                  ),
+                              ),
+                              if (max_age == 99){
+                                  Text("Recommended age: $min_age+ years",
+                                      style: const TextStyle(
+                                      fontSize: 14.0,
+                                      color: Color(0xFF45425A),
+                                      ),
+                                  ),
+                              } else {
+                                  Text("Recommended age: $min_age - $max_age years",
+                                      style: const TextStyle(
+                                      fontSize: 14.0,
+                                      color: Color(0xFF45425A),
+                                      ),
+                                  ),
+                              }
+                              RatingBar.builder(
+                                  initialRating: rating,
+                                  ignoreGestures: true,
+                                  direction: Axis.horizontal,
+                                  // allowHalfRating: true,
+                                  itemCount: 5,
+                                  itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                                  itemBuilder: (context, _) => Icon(
+                                      Icons.star,
+                                      color: Colors.amber,
+                                  ),
+                              );
+                              Text("Description: $description",
+                                  style: const TextStyle(
+                                  fontSize: 14.0,
+                                  color: Color(0xFF45425A),
+                                  ),
+                              ),
+                          ]
+                          ),
+                  ],
+              ),
 
-            //   Text("Book title: $judul"),
-
-              const SizedBox(height: 20),
-
-              Text("Book author: $author"),
-
-              const SizedBox(height: 20),
-
-              Text("Rating: $rating ($num_of_rating)"),
-
-              const SizedBox(height: 20),
-
-              Text("Recommended age: $min_age - $max_age"),
-
-              const SizedBox(height: 20),
-
-              Text("Item description: $description"),
-
-              const SizedBox(height: 20),
 
               ElevatedButton(
-                child: Icon(
-                    Icons.delete,
-                    size: 20.0,
-                ),
-                style: ButtonStyle(
-                    backgroundColor:
-                        MaterialStateProperty.all(Colors.indigo),
-                ),
-                onPressed: () async {
-                        final response = await request.postJson(
-                        "http://localhost:8000/remove-book-flutter/",
-                        jsonEncode(<String, String>{
-                            'pk': snapshot.data![index].pk.toString(),
+                  child: Icon(
+                      Icons.delete,
+                      size: 20.0,
+                  ),
+                  style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStateProperty.all(Colors.indigo),
+                  ),
+                  onPressed: () async {
+                          final response = await request.postJson(
+                          "http://localhost:8000/remove-book-flutter/",
+                          jsonEncode(<String, String>{
+                              'pk': pk.toString(),
 
-                        }));
-                        if (response['status'] == 'success') {
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(const SnackBar(
-                            content: Text("Item berhasil dihapus!"),
-                            ));
-                            Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(builder: (context) => BookPage()),
-                            );
-                        } else {
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(const SnackBar(
-                                content:
-                                    Text("Terdapat kesalahan, silakan coba lagi."),
-                            ));
-                        }
-                    }
+                          }));
+                          if (response['status'] == 'success') {
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(const SnackBar(
+                              content: Text("Item berhasil dihapus!"),
+                              ));
+                              Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => BookPage()),
+                              );
+                          } else {
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(const SnackBar(
+                                  content:
+                                      Text("Terdapat kesalahan, silakan coba lagi."),
+                              ));
+                          }
+                      }
               )
-            ],
-          ),
+
+              ],
           )
           
         ));
+    )
   }
 }

@@ -38,7 +38,7 @@ class LeftDrawer extends StatelessWidget {
           ),
           ListTile(
             leading: Icon(Icons.home_outlined),
-            title: Text('Halaman Utama'),
+            title: Text('Search Katalog'),
             // Bagian redirection ke MyHomePage
             // onTap: () {
             //     Navigator.pushReplacement(
@@ -50,7 +50,7 @@ class LeftDrawer extends StatelessWidget {
           ),
           ListTile(
             leading: Icon(Icons.add_shopping_cart),
-            title: Text('Tambah Produk'),
+            title: Text('Leaderboard'),
             // Bagian redirection ke ShopFormPage
             // onTap: () {
             //     Navigator.pushReplacement(
@@ -62,7 +62,7 @@ class LeftDrawer extends StatelessWidget {
           ),
           ListTile(
             leading: Icon(Icons.shopping_basket),
-            title: Text('Daftar Produk'),
+            title: Text('Review Books'),
             // onTap: () {
             //     // Route menu ke halaman produk
             //     Navigator.push(

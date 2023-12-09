@@ -3,6 +3,17 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:bookmates_mobile/models/buku.dart';
+import 'package:bookmates_mobile/LoginRegister/screens/login.dart';
+
+
+class UserProvider with ChangeNotifier {
+  String? loggedInUserName;
+
+  void setLoggedInUserName(String userName) {
+    loggedInUserName = userName;
+    notifyListeners();
+  }
+}
 
 class DashboardPage extends StatefulWidget {
   DashboardPage({Key? key}) : super(key: key);
@@ -22,30 +33,30 @@ class _DashboardPageState extends State<DashboardPage> {
 
   Future<List<Buku>> fetchData() async {
     try {
-    var url = Uri.parse('http://127.0.0.1:8000/editbuku/get-books-json/');
-    var response = await http.get(
-      url,
-      headers: {"Content-Type": "application/json"},
-    );
+      var url = Uri.parse('http://127.0.0.1:8000/editbuku/get-books-json/');
+      var response = await http.get(
+        url,
+        headers: {"Content-Type": "application/json"},
+      );
 
-    if (response.statusCode == 200) {
-      var data = jsonDecode(utf8.decode(response.bodyBytes));
-      List<Buku> list_buku = [];
-      for (var d in data) {
-        if (d != null) {
-          list_buku.add(Buku.fromJson(d));
+      if (response.statusCode == 200) {
+        var data = jsonDecode(utf8.decode(response.bodyBytes));
+        List<Buku> list_buku = [];
+        for (var d in data) {
+          if (d != null) {
+            list_buku.add(Buku.fromJson(d));
+          }
         }
+        return list_buku;
+      } else {
+        print('Server returned an error: ${response.statusCode}');
+        print(response.body);
+        throw Exception('Failed to load data');
       }
-      return list_buku;
-    } else {
-      print('Server returned an error: ${response.statusCode}');
-      print(response.body);
+    } catch (error) {
+      print('Error: $error');
       throw Exception('Failed to load data');
     }
-  } catch (error) {
-    print('Error: $error');
-    throw Exception('Failed to load data');
-  }
   }
 
   // final List<ShopItem> items = [
@@ -57,50 +68,72 @@ class _DashboardPageState extends State<DashboardPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'BookMates',
+        appBar: AppBar(
+          title: const Text(
+            'BookMates',
+          ),
+          backgroundColor: Colors.pink.shade200,
+          foregroundColor: const Color.fromRGBO(69, 66, 90, 1),
         ),
-        backgroundColor: Colors.pink.shade200,
-        foregroundColor: const Color.fromRGBO(69, 66, 90, 1),
-      ),
-      drawer: const LeftDrawer(),
-      backgroundColor: const Color.fromRGBO(243, 232, 234, 1),
-      body: FutureBuilder<List<Buku>>(
-        future: _booksFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return CircularProgressIndicator(); // Show a loading indicator while waiting for data
-          } else if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}');
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Text('No data available');
-          } else {
-            List<Buku> allBooks = snapshot.data!;
-            return ListView(
-              // ... rest of your code
-              children: [
-                GridView.count(
-                  primary: true,
-                  padding: const EdgeInsets.all(20),
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 10,
-                  crossAxisCount: 3,
-                  shrinkWrap: true,
-                  children: allBooks.map((Buku book) {
-                    return BookCard(book);
-                  }).toList(),
-                ),
-              ],
-            );
-          }
-        }
-    ));
+        drawer: const LeftDrawer(),
+        backgroundColor: const Color.fromRGBO(243, 232, 234, 1),
+        body: FutureBuilder<List<Buku>>(
+            future: _booksFuture,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return CircularProgressIndicator(); // Show a loading indicator while waiting for data
+              } else if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                return Text('No data available');
+              } else {
+                List<Buku> allBooks = snapshot.data!;
+                return ListView(
+                  // ... rest of your code
 
+                  children: [
+                    Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            const Padding(
+                              padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
+                              child: Row(
+                                children: [
+                                  SizedBox(width: 8),
+                                  Icon(Icons.person),
+                                  SizedBox(width: 10),
+                                  Text(
+                                    'Hello, user!',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 17,
+                                      fontFamily: 'Kavoon',
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            GridView.count(
+                              primary: true,
+                              padding: const EdgeInsets.all(20),
+                              crossAxisSpacing: 10,
+                              mainAxisSpacing: 10,
+                              crossAxisCount: 3,
+                              shrinkWrap: true,
+                              children: allBooks.map((Buku book) {
+                                return BookCard(book);
+                              }).toList(),
+                            ),
+                          ],
+                        )),
+                  ],
+                );
+              }
+            }));
   }
 }
-
-
 
 class BookCard extends StatelessWidget {
   final Buku book;
@@ -131,12 +164,12 @@ class BookCard extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // Image.network(
-                  //   book.imageUrl,
-                  //   width: 80,
-                  //   height: 120,
-                  //   fit: BoxFit.cover,
-                  // ),
+                  Image.network(
+                    book.fields.imageUrl,
+                    width: 80,
+                    height: 120,
+                    fit: BoxFit.cover,
+                  ),
                   SizedBox(height: 10),
                   Text(
                     book.fields.judul,
