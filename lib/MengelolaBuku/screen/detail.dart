@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'package:provider/provider.dart';
+import 'dart:convert';
+import 'package:bookmates_mobile/MengelolaBuku/screen/show_book.dart';
+import 'package:bookmates_mobile/Ratings/widget/appbar.dart';
 
 class Detail extends StatelessWidget {
   final String pk;
   final String judul;
   final String author;
-  final String rating;
+  final double bookRating;
   final String num_of_rating;
   final String min_age;
   final String max_age;
@@ -16,7 +22,7 @@ class Detail extends StatelessWidget {
       required this.pk,
       required this.judul,
       required this.author,
-      required this.rating,
+      required this.bookRating,
       required this.num_of_rating,
       required this.min_age,
       required this.max_age,
@@ -25,10 +31,9 @@ class Detail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final request = context.watch<CookieRequest>();
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Books Detail'),
-        ),
+        appBar: myAppBar("Book's Detail"),
         body: Container(
           margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           padding: const EdgeInsets.all(20.0),
@@ -39,9 +44,9 @@ class Detail extends StatelessWidget {
               children: [
 
               Text(
-                  "$judul",
+                  "$judul".toUpperCase(),
                   style: const TextStyle(
-                  fontSize: 18.0,
+                  fontSize: 40.0,
                   fontWeight: FontWeight.bold,
                   color: Color(0xFF45425A),
                   ),
@@ -60,45 +65,43 @@ class Detail extends StatelessWidget {
                           children:[
                               Text("Author: $author",
                                   style: const TextStyle(
-                                  fontSize: 14.0,
+                                  fontSize: 20.0,
                                   color: Color(0xFF45425A),
                                   ),
                               ),
-                              if (max_age == 99){
-                                  Text("Recommended age: $min_age+ years",
-                                      style: const TextStyle(
-                                      fontSize: 14.0,
-                                      color: Color(0xFF45425A),
-                                      ),
+                              Text(
+                                  max_age == 99
+                                      ? "Recommended age: $min_age+ years"
+                                      : "Recommended age: $min_age - $max_age years",
+                                  style: const TextStyle(
+                                  fontSize: 20.0,
+                                  color: Color(0xFF45425A),
                                   ),
-                              } else {
-                                  Text("Recommended age: $min_age - $max_age years",
-                                      style: const TextStyle(
-                                      fontSize: 14.0,
-                                      color: Color(0xFF45425A),
-                                      ),
-                                  ),
-                              }
-                              RatingBar.builder(
-                                  initialRating: rating,
-                                  ignoreGestures: true,
+                              ),
+                              RatingBarIndicator(
+                                  rating: bookRating,
                                   direction: Axis.horizontal,
-                                  // allowHalfRating: true,
                                   itemCount: 5,
-                                  itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                                  // itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
                                   itemBuilder: (context, _) => Icon(
                                       Icons.star,
                                       color: Colors.amber,
                                   ),
-                              );
+                              ),
+                              Text("Amount of Reviewers: $num_of_rating",
+                                  style: const TextStyle(
+                                  fontSize: 20.0,
+                                  color: Color(0xFF45425A),
+                                  ),
+                              ),
                               Text("Description: $description",
                                   style: const TextStyle(
-                                  fontSize: 14.0,
+                                  fontSize: 20.0,
                                   color: Color(0xFF45425A),
                                   ),
                               ),
                           ]
-                          ),
+                      ),
                   ],
               ),
 
@@ -106,23 +109,23 @@ class Detail extends StatelessWidget {
               ElevatedButton(
                   child: Icon(
                       Icons.delete,
-                      size: 20.0,
+                      size: 40.0,
+                      color: Colors.white,
                   ),
                   style: ButtonStyle(
                       backgroundColor:
-                          MaterialStateProperty.all(Colors.indigo),
+                          MaterialStateProperty.all(Colors.pink.shade400),
                   ),
                   onPressed: () async {
                           final response = await request.postJson(
-                          "http://localhost:8000/remove-book-flutter/",
+                          "http://127.0.0.1:8000/editbuku/remove-book-flutter/",
                           jsonEncode(<String, String>{
                               'pk': pk.toString(),
-
                           }));
                           if (response['status'] == 'success') {
                               ScaffoldMessenger.of(context)
                                   .showSnackBar(const SnackBar(
-                              content: Text("Item berhasil dihapus!"),
+                              content: Text("Item deleted!"),
                               ));
                               Navigator.pushReplacement(
                                   context,
@@ -132,16 +135,15 @@ class Detail extends StatelessWidget {
                               ScaffoldMessenger.of(context)
                                   .showSnackBar(const SnackBar(
                                   content:
-                                      Text("Terdapat kesalahan, silakan coba lagi."),
+                                      Text("We ran into a problem, please try again."),
                               ));
                           }
                       }
               )
 
               ],
-          )
-          
-        ));
-    )
+          ) 
+        ))
+    );
   }
 }
