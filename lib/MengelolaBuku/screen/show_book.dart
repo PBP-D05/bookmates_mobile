@@ -93,39 +93,43 @@ Widget build(BuildContext context) {
                                                         // height: 200.0, // adjust the height as needed
                                                         // fit: BoxFit.cover, // adjust the BoxFit as needed
                                                     ),
-                                                    Text("Author: ${snapshot.data![index].fields.author}",
-                                                        style: const TextStyle(
-                                                        fontSize: 14.0,
-                                                        color: Color(0xFF45425A),
-                                                        ),
-                                                    ),
-                                                    if (snapshot.data![index].fields.max_age == 99){
-                                                        Text("Recommended age: ${snapshot.data![index].fields.min_age}+ years",
-                                                            style: const TextStyle(
-                                                            fontSize: 14.0,
-                                                            color: Color(0xFF45425A),
+                                                    Column(
+                                                        children:[
+                                                            Text("Author: ${snapshot.data![index].fields.author}",
+                                                                style: const TextStyle(
+                                                                fontSize: 14.0,
+                                                                color: Color(0xFF45425A),
+                                                                ),
                                                             ),
+                                                            if (snapshot.data![index].fields.max_age == 99){
+                                                                Text("Recommended age: ${snapshot.data![index].fields.min_age}+ years",
+                                                                    style: const TextStyle(
+                                                                    fontSize: 14.0,
+                                                                    color: Color(0xFF45425A),
+                                                                    ),
+                                                                ),
+                                                            } else {
+                                                                Text("Recommended age: ${snapshot.data![index].fields.min_age} - ${snapshot.data![index].fields.max_age} years",
+                                                                    style: const TextStyle(
+                                                                    fontSize: 14.0,
+                                                                    color: Color(0xFF45425A),
+                                                                    ),
+                                                                ),
+                                                            }
+                                                            RatingBar.builder(
+                                                                initialRating: snapshot.data![index].fields.rating,
+                                                                ignoreGestures: true,
+                                                                direction: Axis.horizontal,
+                                                                // allowHalfRating: true,
+                                                                itemCount: 5,
+                                                                itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                                                                itemBuilder: (context, _) => Icon(
+                                                                    Icons.star,
+                                                                    color: Colors.amber,
+                                                                ),
+                                                            );
+                                                        ]
                                                         ),
-                                                    } else {
-                                                        Text("Recommended age: ${snapshot.data![index].fields.min_age} - ${snapshot.data![index].fields.max_age} years",
-                                                            style: const TextStyle(
-                                                            fontSize: 14.0,
-                                                            color: Color(0xFF45425A),
-                                                            ),
-                                                        ),
-                                                    }
-                                                    RatingBar.builder(
-                                                        initialRating: snapshot.data![index].fields.min_age,
-                                                        ignoreGestures: true,
-                                                        direction: Axis.horizontal,
-                                                        // allowHalfRating: true,
-                                                        itemCount: 5,
-                                                        itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-                                                        itemBuilder: (context, _) => Icon(
-                                                            Icons.star,
-                                                            color: Colors.amber,
-                                                        ),
-                                                    );
                                                 ],
                                             ),
 
