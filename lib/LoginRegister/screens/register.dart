@@ -1,7 +1,9 @@
-import 'package:bookmates_mobile/LoginRegister/screens/login.dart';
+import 'dart:convert';
+import 'package:bookmates_mobile/models/pengguna.dart';
 import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
+import 'login.dart';
 
 void main() {
   runApp(const RegisterApp());
@@ -35,6 +37,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _passwordConfirmationController =
       TextEditingController();
   bool _isTeacher = false;
+  int _userCounter = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +51,7 @@ class _RegisterPageState extends State<RegisterPage> {
         backgroundColor: Colors.pink.shade200,
         foregroundColor: Colors.white,
       ),
-      body: Container(
+      body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -57,9 +60,9 @@ class _RegisterPageState extends State<RegisterPage> {
               controller: _usernameController,
               decoration: const InputDecoration(
                 labelText: 'Username',
-                labelStyle: TextStyle(color: Colors.pink),
+                labelStyle: TextStyle(color: Colors.deepPurple),
                 focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.pink),
+                  borderSide: BorderSide(color: Colors.deepPurple),
                 ),
               ),
             ),
@@ -68,9 +71,9 @@ class _RegisterPageState extends State<RegisterPage> {
               controller: _passwordController,
               decoration: const InputDecoration(
                 labelText: 'Password',
-                labelStyle: TextStyle(color: Colors.pink),
+                labelStyle: TextStyle(color: Colors.deepPurple),
                 focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.pink),
+                  borderSide: BorderSide(color: Colors.deepPurple),
                 ),
               ),
               obscureText: true,
@@ -80,9 +83,9 @@ class _RegisterPageState extends State<RegisterPage> {
               controller: _passwordConfirmationController,
               decoration: const InputDecoration(
                 labelText: 'Password Verification',
-                labelStyle: TextStyle(color: Colors.pink),
+                labelStyle: TextStyle(color: Colors.deepPurple),
                 focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.pink),
+                  borderSide: BorderSide(color: Colors.deepPurple),
                 ),
               ),
               obscureText: true,
@@ -102,7 +105,7 @@ class _RegisterPageState extends State<RegisterPage> {
               ],
             ),
             const SizedBox(height: 24.0),
-            ElevatedButton(
+              ElevatedButton(
               onPressed: () async {
                 String username = _usernameController.text;
                 String password = _passwordController.text;
@@ -117,16 +120,27 @@ class _RegisterPageState extends State<RegisterPage> {
                             "Register failed, password verification incorrect.")));
                   return;
                 }
-                final response =
-                    await request.post("http://127.0.0.1:8000/auth/register/", {
-                  'username': username,
-                  'password': password,
-                  'is_teacher': _isTeacher.toString(),
-                });
+
+                // Increment the user counter for a unique user ID
+                _userCounter++;
+
+                print("DEBUG: $username $password");
+
+                // Sending the registration request
+                final response = await request.post(
+                  "http://127.0.0.1:8000/auth/register/",
+                  {
+                    'username': username,
+                    'password': password,
+                    'is_teacher' : _isTeacher? 'true' : 'false'
+                    // You might want to include additional fields here
+                  },
+                );
 
                 if (response['status']) {
                   String message = response['message'];
 
+                  // Redirecting to login page after successful registration
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(builder: (context) => LoginPage()),
@@ -135,6 +149,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     ..hideCurrentSnackBar()
                     ..showSnackBar(SnackBar(content: Text("$message")));
                 } else {
+                  // Displaying an error dialog in case of registration failure
                   showDialog(
                     context: context,
                     builder: (context) => AlertDialog(
@@ -154,6 +169,7 @@ class _RegisterPageState extends State<RegisterPage> {
               },
               child: const Text('Register'),
             ),
+
             const SizedBox(height: 12.0),
             ElevatedButton(
               onPressed: () {
@@ -163,7 +179,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   MaterialPageRoute(builder: (context) => LoginPage()),
                 );
               },
-              child: const Text('Already have an account? Login'),
+              child: const Text('Login'),
             )
           ],
         ),
