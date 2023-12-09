@@ -1,27 +1,52 @@
 import 'package:bookmates_mobile/DashboardUser/screen/sidebar.dart';
 import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:bookmates_mobile/models/buku.dart';
 
-class DashboardPage extends StatelessWidget {
+class DashboardPage extends StatefulWidget {
   DashboardPage({Key? key}) : super(key: key);
-  final List<Book> allBooks = [
-    Book(
-      judul: 'Book Title 1',
-      author: 'Author 1',
-      //imageUrl: 'image_url_1',
-      minAge: 5,
-      maxAge: 10,
-      rating: 4.5,
-    ),
-    // Add more books as needed
-    Book(
-      judul: 'Book Title 2',
-      author: 'Author 2',
-      //imageUrl: 'image_url_2',
-      minAge: 4,
-      maxAge: 15,
-      rating: 4.7,
-    )
-  ];
+
+  @override
+  _DashboardPageState createState() => _DashboardPageState();
+}
+
+class _DashboardPageState extends State<DashboardPage> {
+  Future<List<Buku>>? _booksFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _booksFuture = fetchData();
+  }
+
+  Future<List<Buku>> fetchData() async {
+    try {
+    var url = Uri.parse('http://127.0.0.1:8000/editbuku/get-books-json/');
+    var response = await http.get(
+      url,
+      headers: {"Content-Type": "application/json"},
+    );
+
+    if (response.statusCode == 200) {
+      var data = jsonDecode(utf8.decode(response.bodyBytes));
+      List<Buku> list_buku = [];
+      for (var d in data) {
+        if (d != null) {
+          list_buku.add(Buku.fromJson(d));
+        }
+      }
+      return list_buku;
+    } else {
+      print('Server returned an error: ${response.statusCode}');
+      print(response.body);
+      throw Exception('Failed to load data');
+    }
+  } catch (error) {
+    print('Error: $error');
+    throw Exception('Failed to load data');
+  }
+  }
 
   // final List<ShopItem> items = [
   //   ShopItem("Lihat Produk", Icons.checklist),
@@ -36,80 +61,49 @@ class DashboardPage extends StatelessWidget {
         title: const Text(
           'BookMates',
         ),
-        backgroundColor: const Color.fromRGBO(248, 197, 55, 1),
+        backgroundColor: Colors.pink.shade200,
         foregroundColor: const Color.fromRGBO(69, 66, 90, 1),
       ),
       drawer: const LeftDrawer(),
       backgroundColor: const Color.fromRGBO(243, 232, 234, 1),
-      body: ListView(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                const Padding(
-                  padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
-                  child: Row(
-                    children: [
-                      SizedBox(width: 8),
-                      Icon(Icons.person),
-                      SizedBox(width: 10),
-                      Text(
-                        'Hello, user!',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 17,
-                          fontFamily: 'Kavoon',
-                        ),
-                      ),
-                    ],
-                  ),
+      body: FutureBuilder<List<Buku>>(
+        future: _booksFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return CircularProgressIndicator(); // Show a loading indicator while waiting for data
+          } else if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return Text('No data available');
+          } else {
+            List<Buku> allBooks = snapshot.data!;
+            return ListView(
+              // ... rest of your code
+              children: [
+                GridView.count(
+                  primary: true,
+                  padding: const EdgeInsets.all(20),
+                  crossAxisSpacing: 10,
+                  mainAxisSpacing: 10,
+                  crossAxisCount: 3,
+                  shrinkWrap: true,
+                  children: allBooks.map((Buku book) {
+                    return BookCard(book);
+                  }).toList(),
                 ),
-              // Grid layout
-               GridView.count(
-                // Container pada card kita.
-                primary: true,
-                padding: const EdgeInsets.all(20),
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
-                crossAxisCount: 3,
-                shrinkWrap: true,
-                children: allBooks.map((Book book) {
-                  // Iterasi untuk setiap item
-                  return BookCard(book);
-                }).toList(),
-              ),
-              
-            ],
-          ),
-        ),
-        ],
-      ),
-    );
+              ],
+            );
+          }
+        }
+    ));
+
   }
 }
 
-class Book {
-  final String judul;
-  final String author;
-  //final String imageUrl;
-  final int minAge;
-  final int maxAge;
-  final double rating;
 
-  Book({
-    required this.judul,
-    required this.author,
-    //required this.imageUrl,
-    required this.minAge,
-    required this.maxAge,
-    required this.rating,
-  });
-}
 
 class BookCard extends StatelessWidget {
-  final Book book;
+  final Buku book;
 
   BookCard(this.book);
 
@@ -132,57 +126,56 @@ class BookCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
         ),
         child: Padding(
-          padding: EdgeInsets.all(10),
-          child: SingleChildScrollView(
-            child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Image.network(
-              //   book.imageUrl,
-              //   width: 80,
-              //   height: 120,
-              //   fit: BoxFit.cover,
-              // ),
-              SizedBox(height: 10),
-              Text(
-                book.judul,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontFamily: 'Kavoon',
-                  fontSize: 12,
-                  color: Color(0xFF45425A),
-                ),
-              ),
-              Text(
-                'Author ${book.author}',
-                style: TextStyle(
-                  fontFamily: 'Indie Flower',
-                  fontSize: 10,
-                  color: Color(0xFF4CAF50),
-                ),
-              ),
-              Text(
-                'Age ${book.minAge} - ${book.maxAge} years',
-                style: TextStyle(
-                  fontFamily: 'Indie Flower',
-                  fontSize: 10,
-                  color: Color(0xFF4CAF50),
-                ),
-              ),
-              Row(
+            padding: EdgeInsets.all(10),
+            child: SingleChildScrollView(
+              child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  // Image.network(
+                  //   book.imageUrl,
+                  //   width: 80,
+                  //   height: 120,
+                  //   fit: BoxFit.cover,
+                  // ),
+                  SizedBox(height: 10),
                   Text(
-                    '${book.rating}',
-                    style: TextStyle(fontSize: 12),
+                    book.fields.judul,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontFamily: 'Kavoon',
+                      fontSize: 12,
+                      color: Color(0xFF45425A),
+                    ),
                   ),
-                  Icon(Icons.star, size: 12),
+                  Text(
+                    'Author ${book.fields.author}',
+                    style: TextStyle(
+                      fontFamily: 'Indie Flower',
+                      fontSize: 10,
+                      color: Color(0xFF4CAF50),
+                    ),
+                  ),
+                  Text(
+                    'Age ${book.fields.minAge} - ${book.fields.maxAge} years',
+                    style: TextStyle(
+                      fontFamily: 'Indie Flower',
+                      fontSize: 10,
+                      color: Color(0xFF4CAF50),
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        '${book.fields.rating}',
+                        style: TextStyle(fontSize: 12),
+                      ),
+                      Icon(Icons.star, size: 12),
+                    ],
+                  ),
                 ],
               ),
-            ],
-          ),
-          )
-        ),
+            )),
       ),
     );
   }
