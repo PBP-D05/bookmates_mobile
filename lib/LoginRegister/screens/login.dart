@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 //import 'package:inventory_mobile/screens/register.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
+import 'package:bookmates_mobile/DashboardUser/screen/dashboard.dart';
 import 'package:bookmates_mobile/SearchKatalog/search_page.dart';
 
 
@@ -88,12 +89,16 @@ class _LoginPageState extends State<LoginPage> {
                                     String uname = response['username'];
                                     Navigator.pushReplacement(
                                         context,
-                                        MaterialPageRoute(builder: (context) => SearchPage()),// Dashboard
+                                        MaterialPageRoute(builder: (context) => DashboardPage()),// Dashboard
                                     );
                                     ScaffoldMessenger.of(context)
                                         ..hideCurrentSnackBar()
                                         ..showSnackBar(
                                             SnackBar(content: Text("$message Selamat datang, $uname.")));
+                                     Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => DashboardPage()),
+                    );
                                     } else {
                                     showDialog(
                                         context: context,
@@ -112,6 +117,7 @@ class _LoginPageState extends State<LoginPage> {
                                         ),
                                     );
                                 }
+                               
                             },
                             child: const Text('Login'),
                         ),

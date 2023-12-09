@@ -20,7 +20,7 @@ class Detail extends StatelessWidget {
       required this.num_of_rating,
       required this.min_age,
       required this.max_age,
-      required this.image_url
+      required this.image_url,
       required this.description});
 
   @override
