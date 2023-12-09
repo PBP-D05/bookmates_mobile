@@ -30,6 +30,12 @@ class Buku {
         "pk": pk,
         "fields": fields.toJson(),
     };
+
+    // factory Buku.fromJsonSearch(Map<String, dynamic> json) => Buku(
+    //     model: "json["model"]",
+    //     pk: json["pk"],
+    //     fields: Fields.fromJson(json["fields"]),
+    // );
 }
 
 class Fields {
