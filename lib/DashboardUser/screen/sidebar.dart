@@ -1,5 +1,7 @@
+import 'package:bookmates_mobile/SearchKatalog/search_page.dart';
 import 'package:flutter/material.dart';
 import 'package:bookmates_mobile/DashboardUser/screen/dashboard.dart';
+import 'package:bookmates_mobile/SearchKatalog/search_page.dart';
 
 class LeftDrawer extends StatelessWidget {
   const LeftDrawer({super.key});
@@ -8,8 +10,9 @@ class LeftDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Drawer(
       child: ListView(
-        children: const [
-           DrawerHeader(
+        children: [
+            // Bagian drawer header
+            const DrawerHeader(
             decoration: BoxDecoration(
               color: Color.fromRGBO(248, 197, 55, 1),
             ),
@@ -37,16 +40,16 @@ class LeftDrawer extends StatelessWidget {
             ),
           ),
           ListTile(
-            leading: Icon(Icons.home_outlined),
-            title: Text('Search Katalog'),
-            // Bagian redirection ke MyHomePage
-            // onTap: () {
-            //     Navigator.pushReplacement(
-            //         context,
-            //         MaterialPageRoute(
-            //         builder: (context) => MyHomePage(),
-            //         ));
-            // },
+            leading: const Icon(Icons.home_outlined),
+            title: const Text('Search Katalog'),
+            // Bagian redirection ke SearchPage
+            onTap: () {
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                    builder: (context) => const SearchPage(),
+                    ));
+            },
           ),
           ListTile(
             leading: Icon(Icons.add_shopping_cart),
