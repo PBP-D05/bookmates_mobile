@@ -1,4 +1,6 @@
 import 'package:bookmates_mobile/DashboardUser/screen/sidebar.dart';
+import 'package:bookmates_mobile/Ratings/screen/ratingPage.dart';
+import 'package:bookmates_mobile/Ratings/widget/appbar.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -34,7 +36,7 @@ class _DashboardPageState extends State<DashboardPage> {
 
   Future<List<Buku>> fetchData() async {
     try {
-      var url = Uri.parse('http://127.0.0.1:8000/editbuku/get-books-json/');
+      var url = Uri.parse('http://127.0.0.1:8000/editbuku/get-books-json');
       var response = await http.get(
         url,
         headers: {"Content-Type": "application/json"},
@@ -82,8 +84,6 @@ class _DashboardPageState extends State<DashboardPage> {
                   final response = await request.postJson(
                       "http://127.0.0.1:8000/update_user_name/",
                       jsonEncode(<String, String>{"newName": newName}));
-
-                  
                 } catch (error) {
                   print('Error sending request to update name: $error');
                   // Handle the error accordingly
@@ -106,23 +106,24 @@ class _DashboardPageState extends State<DashboardPage> {
 
   @override
   Widget build(BuildContext context) {
-        final request = context.watch<CookieRequest>();
+    final request = context.watch<CookieRequest>();
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'BookMates',
-        ),
-        backgroundColor: Colors.pink.shade200,
-        foregroundColor: const Color.fromRGBO(69, 66, 90, 1),
-      ),
+      appBar: myAppBar("Dashboard"),
+      // appBar: AppBar(
+      //   title: const Text(
+      //     'BookMates',
+      //   ),
+      //   backgroundColor: Colors.pink.shade200,
+      //   foregroundColor: const Color.fromRGBO(69, 66, 90, 1),
+      // ),
       drawer: const LeftDrawer(),
       backgroundColor: const Color.fromRGBO(243, 232, 234, 1),
       body: FutureBuilder<List<Buku>>(
           future: _booksFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return CircularProgressIndicator(); // Show a loading indicator while waiting for data
+              return Center(child: CircularProgressIndicator()); // Show a loading indicator while waiting for data
             } else if (snapshot.hasError) {
               return Text('Error: ${snapshot.error}');
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
@@ -158,7 +159,8 @@ class _DashboardPageState extends State<DashboardPage> {
                               ),
                               SizedBox(width: 9),
                               ElevatedButton(
-                                onPressed: () => _showEditNameDialog(context, request),
+                                onPressed: () =>
+                                    _showEditNameDialog(context, request),
                                 child: Text('Edit Name'),
                               ),
                             ],
@@ -172,7 +174,15 @@ class _DashboardPageState extends State<DashboardPage> {
                           crossAxisCount: 3,
                           shrinkWrap: true,
                           children: allBooks.map((Buku book) {
-                            return BookCard(book);
+                            return InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: ((context) =>
+                                              RatingPage(book))));
+                                },
+                                child: BookCard(book));
                           }).toList(),
                         ),
                       ],

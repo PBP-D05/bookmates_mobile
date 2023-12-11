@@ -1,4 +1,6 @@
 import 'package:bookmates_mobile/LoginRegister/screens/register.dart';
+import 'package:bookmates_mobile/Ratings/model/reviews.dart';
+import 'package:bookmates_mobile/Ratings/screen/ratingPage.dart';
 // import 'package:bookmates_mobile/main.dart';
 import 'package:flutter/material.dart';
 //import 'package:inventory_mobile/screens/register.dart';
