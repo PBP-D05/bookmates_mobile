@@ -2,9 +2,9 @@ import 'package:bookmates_mobile/models/buku.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
-class BookWidget extends StatelessWidget {
+class DetailBook extends StatelessWidget {
   final Buku buku;
-  const BookWidget(this.buku, {super.key});
+  const DetailBook(this.buku, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -24,14 +24,11 @@ class BookWidget extends StatelessWidget {
                 color: Color(0xFF45425A),
               ),
             ),
-            Row(
+            Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Image.network(
                   buku.fields.imageUrl,
-                  // width: 200.0, // adjust the width as needed
-                  // height: 200.0, // adjust the height as needed
-                  // fit: BoxFit.cover, // adjust the BoxFit as needed
                 ),
                 Column(children: [
                   Text(
@@ -41,22 +38,21 @@ class BookWidget extends StatelessWidget {
                       color: Color(0xFF45425A),
                     ),
                   ),
-                  // if (max_age == 99){
-                  //     Text("Recommended age: $min_age+ years",
-                  //         style: const TextStyle(
-                  //         fontSize: 14.0,
-                  //         color: Color(0xFF45425A),
-                  //         ),
-                  //     ),
-                  // } else {
-                  Text(
-                    "${buku.fields.minAge} - ${buku.fields.maxAge}",
-                    style: const TextStyle(
-                      fontSize: 14.0,
-                      color: Color(0xFF45425A),
+                  // if (buku.fields.maxAge == 99){
+                  buku.fields.maxAge == 99?
+                    Text("Recommended age: ${buku.fields.minAge}+ years",
+                        style: const TextStyle(
+                        fontSize: 14.0,
+                        color: Color(0xFF45425A),
+                        ),
+                    ) :
+                    Text(
+                      "${buku.fields.minAge} - ${buku.fields.maxAge}",
+                      style: const TextStyle(
+                        fontSize: 14.0,
+                        color: Color(0xFF45425A),
+                      ),
                     ),
-                  ),
-                  // },
                   RatingBar.builder(
                     initialRating: 5,
                     ignoreGestures: true,
@@ -72,8 +68,8 @@ class BookWidget extends StatelessWidget {
                   ),
                   Text(
                     // TODO: FIX THIS DESC
-                    // buku.fields.desc, 
-                    "",
+                    buku.fields.desc, 
+                    // "",
                     style: const TextStyle(
                       fontSize: 14.0,
                       color: Color(0xFF45425A),

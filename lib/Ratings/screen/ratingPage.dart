@@ -15,7 +15,7 @@ class RatingPage extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            BookWidget(buku),
+            DetailBook(buku),
             RatingBoxWidget(buku),
           ],
         ),
