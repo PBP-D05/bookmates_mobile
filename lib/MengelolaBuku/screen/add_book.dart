@@ -195,7 +195,7 @@ class _BookFormPageState extends State<BookFormPage> {
                                     child: ElevatedButton(
                                         style: ButtonStyle(
                                             backgroundColor:
-                                                MaterialStateProperty.all(Colors.indigo),
+                                                MaterialStateProperty.all(Colors.pink.shade400),
                                         ),
                                         onPressed: () async {
                                             if (_formKey.currentState!.validate()) {
@@ -231,7 +231,7 @@ class _BookFormPageState extends State<BookFormPage> {
                                         },
                                         child: const Text(
                                             "Add",
-                                            style: TextStyle(color: Colors.white),
+                                            style: TextStyle(color: Colors.white, fontFamily: 'Kavoon'),
                                         ),
                                     ),
                                 ),

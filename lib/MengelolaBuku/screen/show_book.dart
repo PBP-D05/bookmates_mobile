@@ -8,6 +8,7 @@ import 'package:bookmates_mobile/MengelolaBuku/screen/detail.dart';
 import 'package:bookmates_mobile/DashboardUser/screen/sidebar.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:bookmates_mobile/Ratings/widget/appbar.dart';
+import 'package:bookmates_mobile/Ratings/widget/book_widget.dart';
 
 
 class BookPage extends StatefulWidget {
@@ -18,28 +19,6 @@ class BookPage extends StatefulWidget {
 }
 
 class _BookPageState extends State<BookPage> {
-//     final request = context.watch<CookieRequest>();
-//     Future<List<Buku>> fetchProduct() async {
-        
-//         var url = Uri.parse(
-//             'http://localhost:8000/editbuku/show-book-flutter/');
-//         var response = await http.get(
-//             url,
-//             headers: {"Content-Type": "application/json"},
-//         );
-
-//         // melakukan decode response menjadi bentuk json
-//         var data = jsonDecode(utf8.decode(response.bodyBytes));
-
-//         // melakukan konversi data json menjadi object Item
-//         List<Buku> list_item = [];
-//         for (var d in data) {
-//             if (d != null) {
-//                 list_item.add(Buku.fromJson(d));
-//             }
-//         }
-//         return list_item;
-// }
 
 @override
 Widget build(BuildContext context) {
@@ -77,7 +56,7 @@ Widget build(BuildContext context) {
                         Text(
                             "You have not added any books.",
                             style:
-                                TextStyle(color: Color(0xff59A5D8), fontSize: 20),
+                                TextStyle(color: Color(0xff59A5D8), fontSize: 20, fontFamily: 'Kavoon'),
                         ),
                         SizedBox(height: 8),
                         ],
@@ -101,57 +80,60 @@ Widget build(BuildContext context) {
                                                 "${snapshot.data![index].fields.judul}".toUpperCase(),
                                                 style: const TextStyle(
                                                 fontSize: 35.0,
+                                                fontFamily: 'Kavoon',
                                                 fontWeight: FontWeight.bold,
                                                 color: Color(0xFF45425A),
                                                 ),
                                             ),
 
-                                            Row(
-                                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                children: [
-                                                    Image.network(
-                                                        snapshot.data![index].fields.imageUrl,
-                                                        // width: 200.0, // adjust the width as needed
-                                                        // height: 200.0, // adjust the height as needed
-                                                        // fit: BoxFit.cover, // adjust the BoxFit as needed
-                                                    ),
-                                                    Column(
-                                                        children:[
-                                                            Text("Author: ${snapshot.data![index].fields.author}",
-                                                                style: const TextStyle(
-                                                                fontSize: 20.0,
-                                                                color: Color(0xFF45425A),
-                                                                ),
-                                                            ),
-                                                            Text(
-                                                                snapshot.data![index].fields.maxAge == 99 ? 
-                                                                    "Recommended age: ${snapshot.data![index].fields.minAge}+ years"
-                                                                    : "Recommended age: ${snapshot.data![index].fields.minAge} - ${snapshot.data![index].fields.maxAge} years",
-                                                                style: const TextStyle(
-                                                                fontSize: 20.0,
-                                                                color: Color(0xFF45425A),
-                                                                ),
-                                                            ),
-                                                            RatingBarIndicator(
-                                                                rating: snapshot.data![index].fields.rating,
-                                                                direction: Axis.horizontal,
-                                                                itemCount: 5,
-                                                                // itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-                                                                itemBuilder: (context, _) => Icon(
-                                                                    Icons.star,
-                                                                    color: Colors.amber,
-                                                                ),
-                                                            )
-                                                        ]
-                                                        ),
-                                                ],
+                                            // Row(
+                                            //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                            //     children: [
+                                            Image.network(
+                                                snapshot.data![index].fields.imageUrl,
+                                                width: 100.0, // adjust the width as needed
+                                                height: 150.0, // adjust the height as needed
+                                                // fit: BoxFit.cover, // adjust the BoxFit as needed
                                             ),
+                                                    // Column(
+                                                    //     children:[
+                                            Text("Author: ${snapshot.data![index].fields.author}",
+                                                style: const TextStyle(
+                                                fontSize: 20.0,
+                                                fontFamily: 'Indie Flower',
+                                                color: Color(0xFF45425A),
+                                                ),
+                                            ),
+                                            Text(
+                                                snapshot.data![index].fields.maxAge == 99 ? 
+                                                    "Recommended age: ${snapshot.data![index].fields.minAge}+ years"
+                                                    : "Recommended age: ${snapshot.data![index].fields.minAge} - ${snapshot.data![index].fields.maxAge} years",
+                                                style: const TextStyle(
+                                                fontSize: 20.0,
+                                                fontFamily: 'Indie Flower',
+                                                color: Color(0xFF45425A),
+                                                ),
+                                            ),
+                                            RatingBarIndicator(
+                                                rating: snapshot.data![index].fields.rating,
+                                                direction: Axis.horizontal,
+                                                itemCount: 5,
+                                                // itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                                                itemBuilder: (context, _) => Icon(
+                                                    Icons.star,
+                                                    color: Colors.amber,
+                                                ),
+                                            ),
+                                                        // ]
+                                                        // ),
+                                            //     ],
+                                            // ),
 
 
                                             ElevatedButton(
                                                 child: Icon(
                                                     Icons.delete,
-                                                    size: 40.0,
+                                                    size: 30.0,
                                                     color: Colors.white,
                                                 ),
                                                 style: ButtonStyle(
@@ -191,16 +173,7 @@ Widget build(BuildContext context) {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => Detail(
-                                        pk: snapshot.data![index].pk.toString(),
-                                        judul: snapshot.data![index].fields.judul,
-                                        author: snapshot.data![index].fields.author,
-                                        bookRating: snapshot.data![index].fields.rating,
-                                        num_of_rating: snapshot.data![index].fields.numOfRating.toString(),
-                                        min_age: snapshot.data![index].fields.minAge.toString(),
-                                        max_age: snapshot.data![index].fields.maxAge.toString(),
-                                        image_url: snapshot.data![index].fields.imageUrl,
-                                        description: snapshot.data![index].fields.desc,
-                                        )
+                                        book: snapshot.data![index])
                                     )
                                     );
                                 },

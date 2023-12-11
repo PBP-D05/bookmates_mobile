@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:bookmates_mobile/DashboardUser/screen/dashboard.dart';
-// import 'package:bookmates_mobile/MengelolaBuku/screen/show_book.dart';
+import 'package:bookmates_mobile/MengelolaBuku/screen/show_book.dart';
 // import 'package:bookmates_mobile/SearchKatalog/search_page.dart';
 
 
@@ -92,7 +92,7 @@ class _LoginPageState extends State<LoginPage> {
                                     String uname = response['username'];
                                     Navigator.pushReplacement(
                                         context,
-                                        MaterialPageRoute(builder: (context) => DashboardPage()),// Dashboard
+                                        MaterialPageRoute(builder: (context) => BookPage()),// Dashboard
                                     );
                                     ScaffoldMessenger.of(context)
                                         ..hideCurrentSnackBar()
@@ -100,7 +100,7 @@ class _LoginPageState extends State<LoginPage> {
                                             SnackBar(content: Text("$message Selamat datang, $uname.")));
                                      Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => DashboardPage()),
+                    MaterialPageRoute(builder: (context) => BookPage()),
                     );
                                     } else {
                                     showDialog(

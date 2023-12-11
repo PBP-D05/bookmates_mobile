@@ -22,6 +22,7 @@ class DetailBook extends StatelessWidget {
                 fontSize: 18.0,
                 fontWeight: FontWeight.bold,
                 color: Color(0xFF45425A),
+                fontFamily: 'Kavoon',
               ),
             ),
             Column(
@@ -32,10 +33,11 @@ class DetailBook extends StatelessWidget {
                 ),
                 Column(children: [
                   Text(
-                    buku.fields.author,
+                    "Author: ${buku.fields.author}",
                     style: const TextStyle(
                       fontSize: 14.0,
                       color: Color(0xFF45425A),
+                      fontFamily: 'Indie Flower',
                     ),
                   ),
                   // if (buku.fields.maxAge == 99){
@@ -44,17 +46,19 @@ class DetailBook extends StatelessWidget {
                         style: const TextStyle(
                         fontSize: 14.0,
                         color: Color(0xFF45425A),
+                        fontFamily: 'Indie Flower',
                         ),
                     ) :
                     Text(
-                      "${buku.fields.minAge} - ${buku.fields.maxAge}",
+                      "Recommended age: ${buku.fields.minAge} - ${buku.fields.maxAge} years",
                       style: const TextStyle(
                         fontSize: 14.0,
                         color: Color(0xFF45425A),
+                        fontFamily: 'Indie Flower',
                       ),
                     ),
                   RatingBar.builder(
-                    initialRating: 5,
+                    initialRating: buku.fields.rating,
                     ignoreGestures: true,
                     direction: Axis.horizontal,
                     // allowHalfRating: true,
@@ -73,6 +77,7 @@ class DetailBook extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 14.0,
                       color: Color(0xFF45425A),
+                      fontFamily: 'Indie Flower',
                     ),
                   ),
                 ]),
