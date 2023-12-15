@@ -104,9 +104,7 @@ class DetailBook extends StatelessWidget {
                   //   padding: const EdgeInsets.only(top: 16.0, bottom: 16.0),
                   //   child:
                   Text(
-                    // TODO: FIX THIS DESC
                     buku.fields.desc, 
-                    // "",
                     style: const TextStyle(
                       fontSize: 18.0,
                       color: Color(0xFF45425A),

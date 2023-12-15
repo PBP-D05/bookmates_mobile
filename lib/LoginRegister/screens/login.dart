@@ -100,6 +100,10 @@ class _LoginPageState extends State<LoginPage> {
                                         ..hideCurrentSnackBar()
                                         ..showSnackBar(
                                             SnackBar(content: Text("$message Selamat datang, $uname.")));
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => DashboardPage()),
+                                    );
                                     } else {
                                     showDialog(
                                         context: context,

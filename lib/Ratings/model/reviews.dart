@@ -36,7 +36,7 @@ class Fields {
     int buku;
     int user;
     String text;
-    int rating;
+    double rating;
 
     Fields({
         required this.buku,
