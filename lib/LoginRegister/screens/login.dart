@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:bookmates_mobile/DashboardUser/screen/dashboard.dart';
 import 'package:bookmates_mobile/MengelolaBuku/screen/add_book.dart';
 // import 'package:bookmates_mobile/SearchKatalog/search_page.dart';
+import 'package:bookmates_mobile/Ratings/widget/appbar.dart';
 
 
 void main() {
@@ -45,14 +46,7 @@ class _LoginPageState extends State<LoginPage> {
     Widget build(BuildContext context) {
         final request = context.watch<CookieRequest>();
         return Scaffold(
-            appBar: AppBar(
-          title: const Text(
-          'Login',
-          style: TextStyle(color: Colors.white),
-        ),
-        backgroundColor: Colors.pink.shade200,
-        foregroundColor: Colors.white,
-      ),
+            appBar: myAppBar("Login"),
             body: Container(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
@@ -62,6 +56,10 @@ class _LoginPageState extends State<LoginPage> {
                             controller: _usernameController,
                             decoration: const InputDecoration(
                                 labelText: 'Username',
+                                labelStyle: TextStyle(color: Colors.pink),
+                                focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.pink),
+                                ),
                             ),
                         ),
                         const SizedBox(height: 12.0),
@@ -69,6 +67,10 @@ class _LoginPageState extends State<LoginPage> {
                             controller: _passwordController,
                             decoration: const InputDecoration(
                                 labelText: 'Password',
+                                labelStyle: TextStyle(color: Colors.pink),
+                                focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.pink),
+                                ),
                             ),
                             obscureText: true,
                         ),
@@ -92,16 +94,12 @@ class _LoginPageState extends State<LoginPage> {
                                     String uname = response['username'];
                                     Navigator.pushReplacement(
                                         context,
-                                        MaterialPageRoute(builder: (context) => BookFormPage()),// Dashboard
+                                        MaterialPageRoute(builder: (context) => DashboardPage()),// Dashboard
                                     );
                                     ScaffoldMessenger.of(context)
                                         ..hideCurrentSnackBar()
                                         ..showSnackBar(
                                             SnackBar(content: Text("$message Selamat datang, $uname.")));
-                                     Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => BookFormPage()),
-                    );
                                     } else {
                                     showDialog(
                                         context: context,
@@ -124,17 +122,6 @@ class _LoginPageState extends State<LoginPage> {
                             },
                             child: const Text('Login'),
                         ),
-                        const SizedBox(height: 12.0),
-                ElevatedButton(
-                onPressed: () {
-                    // Navigate to Register Page
-                    Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => RegisterPage()),
-                    );
-                },
-                child: const Text('Register'),
-                )
                     ],
                 ),
             ),

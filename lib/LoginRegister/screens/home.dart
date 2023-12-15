@@ -96,24 +96,29 @@ class HomeScreen extends StatelessWidget {
                       Text(
                         "Already have an account?",
                         style: TextStyle(
-                          color: Colors.pink.shade400,
-                          fontSize: 20,
+                          color: Colors.pink.shade200,
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                      TextButton(
+                      ElevatedButton(
                         onPressed: () {
                           // Navigate to the login page
                           Navigator.push(
                             context, MaterialPageRoute(builder: (context) => LoginPage()),
                           );
                         },
-                        style: TextButton.styleFrom(
-                          foregroundColor: Colors.white,
+                        style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.pink.shade200,
+                          padding: EdgeInsets.symmetric(vertical: 15, horizontal: 30),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(4),
+                          ),
                         ),
                         child: Text(
                           'Login',
                           style: TextStyle(
+                            color: Colors.white,
                             fontSize: 26,
                             fontWeight: FontWeight.bold,
                           ),
