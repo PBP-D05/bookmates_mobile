@@ -126,7 +126,7 @@ Widget build(BuildContext context) {
                                             )
                                             ),
                                             RatingBarIndicator(
-                                                rating: 3, //snapshot.data![index].fields.rating,
+                                                rating: snapshot.data![index].fields.rating,
                                                 direction: Axis.horizontal,
                                                 itemCount: 5,
                                                 // itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
