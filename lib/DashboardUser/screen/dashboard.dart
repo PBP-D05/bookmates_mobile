@@ -8,13 +8,37 @@ import 'package:bookmates_mobile/models/buku.dart';
 import 'package:bookmates_mobile/LoginRegister/screens/login.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
+import 'package:bookmates_mobile/models/pengguna.dart';
+import 'package:bookmates_mobile/MengelolaBuku/screen/show_book.dart';
 
 class UserProvider with ChangeNotifier {
-  String? loggedInUserName;
+  String loggedInUserName = "";
+  Pengguna? loggedInUser;
+  bool? isGuru;
+  bool _isTeacher = false;
 
   void setLoggedInUserName(String userName) {
     loggedInUserName = userName;
     notifyListeners();
+  }
+
+  // void setLoggedInUser(Pengguna user) {
+  //   loggedInUser = user;
+  //   isGuru = user.fields.isGuru;
+  //   notifyListeners();
+  // }
+
+  // bool isUserGuru(Pengguna user) {
+  //   return user.fields.isGuru;
+  // }
+
+  void setTeacherStatus(bool value) {
+    _isTeacher = value;
+    notifyListeners();
+  }
+
+  bool isTeacher() {
+    return _isTeacher;
   }
 }
 
@@ -27,6 +51,7 @@ class DashboardPage extends StatefulWidget {
 
 class _DashboardPageState extends State<DashboardPage> {
   Future<List<Buku>>? _booksFuture;
+  Future<Pengguna>? user;
 
   @override
   void initState() {
@@ -34,9 +59,19 @@ class _DashboardPageState extends State<DashboardPage> {
     _booksFuture = fetchData();
   }
 
+  Future<Pengguna> fetch() async {
+    var url = Uri.parse('http://127.0.0.1:8000/auth/login/');
+    var response =
+        await http.get(url, headers: {"Content-Type": "application/json"});
+    var data = jsonDecode(utf8.decode(response.bodyBytes));
+    Pengguna user = Pengguna.fromJson(data);
+    String username = data.user.fields.toString();
+    return data;
+  }
+
   Future<List<Buku>> fetchData() async {
     try {
-      var url = Uri.parse('http://127.0.0.1:8000/editbuku/get-books-json');
+      var url = Uri.parse('http://127.0.0.1:8000/editbuku/get-books-json/');
       var response = await http.get(
         url,
         headers: {"Content-Type": "application/json"},
@@ -63,7 +98,6 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   void _showEditNameDialog(BuildContext context, CookieRequest request) {
-    print("a");
     TextEditingController _nameController = TextEditingController();
     showDialog(
       context: context,
@@ -107,6 +141,9 @@ class _DashboardPageState extends State<DashboardPage> {
   @override
   Widget build(BuildContext context) {
     final request = context.watch<CookieRequest>();
+    final userProvider = context.watch<UserProvider>();
+
+    
 
     return Scaffold(
       appBar: myAppBar("Dashboard"),
@@ -123,33 +160,59 @@ class _DashboardPageState extends State<DashboardPage> {
           future: _booksFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator()); // Show a loading indicator while waiting for data
+              return Center(
+                  child:
+                      CircularProgressIndicator()); // Show a loading indicator while waiting for data
             } else if (snapshot.hasError) {
               return Text('Error: ${snapshot.error}');
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
               return Text('No data available');
             } else {
               List<Buku> allBooks = snapshot.data!;
-              return ListView(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Padding(
-                          padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
-                          child: Row(
-                            children: [
-                              SizedBox(width: 8),
-                              Icon(Icons.person),
-                              SizedBox(width: 10),
-                              Text(
+              return ListView(children: [
+                
+                Container(
+                  width: 10,
+                  height:50,
+                  child:ElevatedButton(
+                  onPressed: () {
+                    if (userProvider._isTeacher) {
+                      // Navigate to the page only if the user is a teacher
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => BookPage()),
+                      );
+                    } else {
+                      // Show a message or handle the case when the user is not a teacher
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                              "You need to be a teacher to access this page."),
+                        ),
+                      );
+                    }
+                  },
+                  
+                  child: Text('Organize Books'),
+                ),),
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
+                        child: Row(
+                          children: [
+                            SizedBox(width: 8),
+                            Icon(Icons.person),
+                            SizedBox(width: 10),
+                            Text(
                                 context
                                             .watch<UserProvider>()
                                             .loggedInUserName !=
                                         null
-                                    ? 'Hello, ${context.watch<UserProvider>().loggedInUserName}!'
+                                    ? 'Hello ${context.watch<UserProvider>().loggedInUserName}!'
                                     : 'Hello, user!',
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
@@ -157,39 +220,38 @@ class _DashboardPageState extends State<DashboardPage> {
                                   fontFamily: 'Kavoon',
                                 ),
                               ),
-                              SizedBox(width: 9),
-                              ElevatedButton(
-                                onPressed: () =>
-                                    _showEditNameDialog(context, request),
-                                child: Text('Edit Name'),
-                              ),
-                            ],
-                          ),
+                            SizedBox(width: 9),
+                            ElevatedButton(
+                              onPressed: () =>
+                                  _showEditNameDialog(context, request),
+                              child: Text('Edit Name'),
+                            ),
+                          ],
                         ),
-                        GridView.count(
-                          primary: true,
-                          padding: const EdgeInsets.all(20),
-                          crossAxisSpacing: 10,
-                          mainAxisSpacing: 10,
-                          crossAxisCount: 3,
-                          shrinkWrap: true,
-                          children: allBooks.map((Buku book) {
-                            return InkWell(
-                                onTap: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: ((context) =>
-                                              RatingPage(book))));
-                                },
-                                child: BookCard(book));
-                          }).toList(),
-                        ),
-                      ],
-                    ),
+                      ),
+                      GridView.count(
+                        primary: true,
+                        padding: const EdgeInsets.all(20),
+                        crossAxisSpacing: 10,
+                        mainAxisSpacing: 10,
+                        crossAxisCount: 3,
+                        shrinkWrap: true,
+                        children: allBooks.map((Buku book) {
+                          return InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: ((context) =>
+                                            RatingPage(book))));
+                              },
+                              child: BookCard(book));
+                        }).toList(),
+                      ),
+                    ],
                   ),
-                ],
-              );
+                ),
+              ]);
             }
           }),
     );
@@ -204,7 +266,7 @@ class BookCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.all(8),
+      margin: EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(10),
@@ -227,8 +289,8 @@ class BookCard extends StatelessWidget {
                 children: [
                   Image.network(
                     book.fields.imageUrl,
-                    width: 80,
-                    height: 120,
+                    width: 140,
+                    height: 180,
                     fit: BoxFit.cover,
                   ),
                   SizedBox(height: 10),
@@ -237,7 +299,7 @@ class BookCard extends StatelessWidget {
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontFamily: 'Kavoon',
-                      fontSize: 12,
+                      fontSize: 20,
                       color: Color(0xFF45425A),
                     ),
                   ),
@@ -245,7 +307,7 @@ class BookCard extends StatelessWidget {
                     'Author ${book.fields.author}',
                     style: TextStyle(
                       fontFamily: 'Indie Flower',
-                      fontSize: 10,
+                      fontSize: 20,
                       color: Color(0xFF4CAF50),
                     ),
                   ),
@@ -253,7 +315,7 @@ class BookCard extends StatelessWidget {
                     'Age ${book.fields.minAge} - ${book.fields.maxAge} years',
                     style: TextStyle(
                       fontFamily: 'Indie Flower',
-                      fontSize: 10,
+                      fontSize: 20,
                       color: Color(0xFF4CAF50),
                     ),
                   ),

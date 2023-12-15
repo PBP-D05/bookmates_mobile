@@ -1,3 +1,4 @@
+import 'package:bookmates_mobile/LoginRegister/screens/home.dart';
 import 'package:bookmates_mobile/SearchKatalog/search_page.dart';
 import 'package:flutter/material.dart';
 import 'package:bookmates_mobile/DashboardUser/screen/dashboard.dart';
@@ -14,18 +15,19 @@ class LeftDrawer extends StatelessWidget {
             // Bagian drawer header
             const DrawerHeader(
             decoration: BoxDecoration(
-              color: Color.fromRGBO(248, 197, 55, 1),
+              color: Colors.pink,
             ),
             child: Column(
               children: [
-                SizedBox(height: 10),
+                SizedBox(height: 40),
                 Text(
                   'BookMates',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: 30,
+                    fontSize: 40,
                     fontWeight: FontWeight.bold,
-                    color: Color.fromRGBO(69, 66, 90, 1),
+                    color: Colors.white,
+                    fontFamily: 'Kavoon'
                   ),
                 ),
                 Padding(padding: EdgeInsets.all(10)),
@@ -40,7 +42,7 @@ class LeftDrawer extends StatelessWidget {
             ),
           ),
           ListTile(
-            leading: const Icon(Icons.home_outlined),
+            leading: const Icon(Icons.search),
             title: const Text('Search Katalog'),
             // Bagian redirection ke SearchPage
             onTap: () {
@@ -52,7 +54,7 @@ class LeftDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: Icon(Icons.add_shopping_cart),
+            leading: Icon(Icons.leaderboard),
             title: Text('Leaderboard'),
             // Bagian redirection ke ShopFormPage
             // onTap: () {
@@ -64,15 +66,15 @@ class LeftDrawer extends StatelessWidget {
             // },
           ),
           ListTile(
-            leading: Icon(Icons.shopping_basket),
-            title: Text('Review Books'),
-            // onTap: () {
-            //     // Route menu ke halaman produk
-            //     Navigator.push(
-            //     context,
-            //     MaterialPageRoute(builder: (context) => const ProductPage()),
-            //     );
-            // },
+            leading: Icon(Icons.power_settings_new_outlined),
+            title: Text('Logout'),
+            onTap: () {
+                // Route menu ke halaman produk
+                Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const HomeScreen()),
+                );
+            },
           ),
         ],
       ),

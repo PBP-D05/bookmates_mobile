@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'login.dart';
+import 'package:bookmates_mobile/DashboardUser/screen/dashboard.dart';
 
 void main() {
   runApp(const RegisterApp());
@@ -42,6 +43,8 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     final request = context.watch<CookieRequest>();
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -105,7 +108,7 @@ class _RegisterPageState extends State<RegisterPage> {
               ],
             ),
             const SizedBox(height: 24.0),
-              ElevatedButton(
+            ElevatedButton(
               onPressed: () async {
                 String username = _usernameController.text;
                 String password = _passwordController.text;
@@ -132,13 +135,17 @@ class _RegisterPageState extends State<RegisterPage> {
                   {
                     'username': username,
                     'password': password,
-                    'is_teacher' : _isTeacher? 'true' : 'false'
+                    'is_teacher': _isTeacher ? 'true' : 'false'
                     // You might want to include additional fields here
                   },
                 );
 
+                  
+                userProvider.setTeacherStatus(response['is_teacher']);
+                  
                 if (response['status']) {
                   String message = response['message'];
+                 
 
                   // Redirecting to login page after successful registration
                   Navigator.pushReplacement(
@@ -169,7 +176,6 @@ class _RegisterPageState extends State<RegisterPage> {
               },
               child: const Text('Register'),
             ),
-
             const SizedBox(height: 12.0),
             ElevatedButton(
               onPressed: () {
