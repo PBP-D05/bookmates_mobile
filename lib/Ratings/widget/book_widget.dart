@@ -16,46 +16,64 @@ class DetailBook extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Center(
+              child:
             Text(
               buku.fields.judul,
               style: const TextStyle(
-                fontSize: 18.0,
+                fontSize: 30.0,
                 fontWeight: FontWeight.bold,
                 color: Color(0xFF45425A),
                 fontFamily: 'Kavoon',
               ),
+            )
             ),
             Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Image.network(
-                  buku.fields.imageUrl,
+                Padding(
+                  padding: const EdgeInsets.only(top: 16.0, bottom: 16.0),
+                  child:
+                Center(
+                  child: 
+                    Image.network(
+                    buku.fields.imageUrl,
+                  ),
+                )
                 ),
                 Column(children: [
+                  
                   Text(
                     "Author: ${buku.fields.author}",
                     style: const TextStyle(
-                      fontSize: 14.0,
+                      fontSize: 18.0,
                       color: Color(0xFF45425A),
                       fontFamily: 'Indie Flower',
                     ),
                   ),
                   // if (buku.fields.maxAge == 99){
                   buku.fields.maxAge == 99?
+                  Padding(
+                    padding: const EdgeInsets.only(top: 16.0, bottom: 16.0),
+                    child:
                     Text("Recommended age: ${buku.fields.minAge}+ years",
                         style: const TextStyle(
-                        fontSize: 14.0,
+                        fontSize: 18.0,
                         color: Color(0xFF45425A),
                         fontFamily: 'Indie Flower',
                         ),
-                    ) :
+                    )) :
+                    Padding(
+                      padding: const EdgeInsets.only(top: 16.0, bottom: 16.0),
+                      child:
                     Text(
                       "Recommended age: ${buku.fields.minAge} - ${buku.fields.maxAge} years",
                       style: const TextStyle(
-                        fontSize: 14.0,
+                        fontSize: 18.0,
                         color: Color(0xFF45425A),
                         fontFamily: 'Indie Flower',
                       ),
+                    ),
                     ),
                   RatingBar.builder(
                     initialRating: buku.fields.rating,
@@ -70,15 +88,31 @@ class DetailBook extends StatelessWidget {
                       color: Colors.amber,
                     ),
                   ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 16.0, bottom: 16.0),
+                    child:
+                  Text(
+                    "${buku.fields.rating} star from ${buku.fields.numOfRating} reviews", 
+                    style: const TextStyle(
+                      fontSize: 18.0,
+                      color: Color(0xFF45425A),
+                      fontFamily: 'Indie Flower',
+                    ),
+                  ),
+                  ),
+                  // Padding(
+                  //   padding: const EdgeInsets.only(top: 16.0, bottom: 16.0),
+                  //   child:
                   Text(
                     // TODO: FIX THIS DESC
                     buku.fields.desc, 
                     // "",
                     style: const TextStyle(
-                      fontSize: 14.0,
+                      fontSize: 18.0,
                       color: Color(0xFF45425A),
                       fontFamily: 'Indie Flower',
                     ),
+                  // ),
                   ),
                 ]),
               ],
