@@ -50,6 +50,7 @@ class ShowBook extends StatelessWidget {
                     Text(
                       buku.fields.judul,
                       style: TextStyle(
+                        fontFamily: 'Kavoon',
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
                         color: Colors.pink,
