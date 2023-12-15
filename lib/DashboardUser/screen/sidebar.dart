@@ -2,6 +2,7 @@ import 'package:bookmates_mobile/SearchKatalog/search_page.dart';
 import 'package:flutter/material.dart';
 import 'package:bookmates_mobile/DashboardUser/screen/dashboard.dart';
 import 'package:bookmates_mobile/SearchKatalog/search_page.dart';
+import 'package:bookmates_mobile/ReviewerLeaderboard/screen/leaderboard.dart';
 
 class LeftDrawer extends StatelessWidget {
   const LeftDrawer({super.key});
