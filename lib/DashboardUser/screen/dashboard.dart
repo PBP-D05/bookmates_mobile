@@ -10,6 +10,7 @@ import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:bookmates_mobile/models/pengguna.dart';
 import 'package:bookmates_mobile/MengelolaBuku/screen/show_book.dart';
+import 'package:bookmates_mobile/MengelolaBuku/screen/add_book.dart';
 
 class UserProvider with ChangeNotifier {
   String loggedInUserName = "";
@@ -218,7 +219,7 @@ class _DashboardPageState extends State<DashboardPage> {
                             if (userProvider._isTeacher) {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => BookPage()),
+                                MaterialPageRoute(builder: (context) => BookFormPage()),
                               );
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(

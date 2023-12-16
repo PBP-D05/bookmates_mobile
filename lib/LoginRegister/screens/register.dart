@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:bookmates_mobile/Ratings/widget/appbar.dart';
 import 'package:bookmates_mobile/models/pengguna.dart';
 import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
@@ -38,7 +39,6 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _passwordConfirmationController =
       TextEditingController();
   bool _isTeacher = false;
-  int _userCounter = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -46,14 +46,7 @@ class _RegisterPageState extends State<RegisterPage> {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Register',
-          style: TextStyle(color: Colors.white),
-        ),
-        backgroundColor: Colors.pink.shade200,
-        foregroundColor: Colors.white,
-      ),
+      appBar: myAppBar("Register"),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -63,9 +56,9 @@ class _RegisterPageState extends State<RegisterPage> {
               controller: _usernameController,
               decoration: const InputDecoration(
                 labelText: 'Username',
-                labelStyle: TextStyle(color: Colors.deepPurple),
+                labelStyle: TextStyle(color: Colors.pink),
                 focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.deepPurple),
+                  borderSide: BorderSide(color: Colors.pink),
                 ),
               ),
             ),
@@ -74,9 +67,9 @@ class _RegisterPageState extends State<RegisterPage> {
               controller: _passwordController,
               decoration: const InputDecoration(
                 labelText: 'Password',
-                labelStyle: TextStyle(color: Colors.deepPurple),
+                labelStyle: TextStyle(color: Colors.pink),
                 focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.deepPurple),
+                  borderSide: BorderSide(color: Colors.pink),
                 ),
               ),
               obscureText: true,
@@ -86,9 +79,9 @@ class _RegisterPageState extends State<RegisterPage> {
               controller: _passwordConfirmationController,
               decoration: const InputDecoration(
                 labelText: 'Password Verification',
-                labelStyle: TextStyle(color: Colors.deepPurple),
+                labelStyle: TextStyle(color: Colors.pink),
                 focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.deepPurple),
+                  borderSide: BorderSide(color: Colors.pink),
                 ),
               ),
               obscureText: true,
@@ -104,7 +97,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     });
                   },
                 ),
-                Text('I am a teacher'),
+                Text('I am a writer'),
               ],
             ),
             const SizedBox(height: 24.0),
@@ -115,6 +108,17 @@ class _RegisterPageState extends State<RegisterPage> {
                 String passwordConfirmation =
                     _passwordConfirmationController.text;
 
+                
+                if (username.isEmpty) {
+                  ScaffoldMessenger.of(context)
+                  ..hideCurrentSnackBar()
+                  ..showSnackBar(const SnackBar(
+                    content: Text("Please enter a username."),
+                  ));
+                return;
+              }
+
+          
                 if (password != passwordConfirmation) {
                   ScaffoldMessenger.of(context)
                     ..hideCurrentSnackBar()
@@ -123,11 +127,9 @@ class _RegisterPageState extends State<RegisterPage> {
                             "Register failed, password verification incorrect.")));
                   return;
                 }
+                
 
-                // Increment the user counter for a unique user ID
-                _userCounter++;
-
-                print("DEBUG: $username $password");
+                // print("DEBUG: $username $password");
 
                 // Sending the registration request
                 final response = await request.post(
@@ -136,7 +138,6 @@ class _RegisterPageState extends State<RegisterPage> {
                     'username': username,
                     'password': password,
                     'is_teacher': _isTeacher ? 'true' : 'false'
-                    // You might want to include additional fields here
                   },
                 );
 
@@ -176,6 +177,7 @@ class _RegisterPageState extends State<RegisterPage> {
               },
               child: const Text('Register'),
             ),
+
             const SizedBox(height: 12.0),
             ElevatedButton(
               onPressed: () {

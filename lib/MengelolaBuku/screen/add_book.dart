@@ -37,6 +37,21 @@ class _BookFormPageState extends State<BookFormPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                             Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child:
+                            Center(
+                              child:
+                              Text(
+                                "My New Work",
+                                style: const TextStyle(
+                                  fontSize: 30.0,
+                                  fontFamily: 'Kavoon',
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF45425A),
+                                  ),
+                              ))
+                            ),
+                            Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: TextFormField(
                                 decoration: InputDecoration(
@@ -44,6 +59,9 @@ class _BookFormPageState extends State<BookFormPage> {
                                 labelText: "Book Title",
                                 border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(5.0),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.pink.shade400),
                                 ),
                                 ),
                                 onChanged: (String? value) {
@@ -67,6 +85,9 @@ class _BookFormPageState extends State<BookFormPage> {
                                 labelText: "Author",
                                 border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(5.0),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.pink.shade400),
                                 ),
                                 ),
                                 onChanged: (String? value) {
@@ -95,6 +116,9 @@ class _BookFormPageState extends State<BookFormPage> {
                                                 border: OutlineInputBorder(
                                                     borderRadius: BorderRadius.circular(5.0),
                                                 ),
+                                                focusedBorder: OutlineInputBorder(
+                                                  borderSide: BorderSide(color: Colors.pink.shade400),
+                                                ),
                                                 ),
                                                 onChanged: (String? value) {
                                                 setState(() {
@@ -120,6 +144,9 @@ class _BookFormPageState extends State<BookFormPage> {
                                                 labelText: "Recommended age",
                                                 border: OutlineInputBorder(
                                                     borderRadius: BorderRadius.circular(5.0),
+                                                ),
+                                                focusedBorder: OutlineInputBorder(
+                                                  borderSide: BorderSide(color: Colors.pink.shade400),
                                                 ),
                                                 ),
                                                 onChanged: (String? value) {
@@ -151,6 +178,9 @@ class _BookFormPageState extends State<BookFormPage> {
                                 border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(5.0),
                                 ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.pink.shade400),
+                                ),
                                 ),
                                 onChanged: (String? value) {
                                 setState(() {
@@ -173,6 +203,9 @@ class _BookFormPageState extends State<BookFormPage> {
                                     labelText: "Description",
                                     border: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(5.0),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(color: Colors.pink.shade400),
                                     ),
                                     ),
                                     onChanged: (String? value) {
@@ -240,136 +273,6 @@ class _BookFormPageState extends State<BookFormPage> {
                     )
                 ),
               ),
-              onChanged: (String? value) {
-                setState(() {
-                  _author = value!;
-                });
-              },
-              validator: (String? value) {
-                if (value == null || value.isEmpty) {
-                  return "Penulis tidak boleh kosong!";
-                }
-                return null;
-              },
-            ),
-          ),
-          Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(children: [
-                TextFormField(
-                  decoration: InputDecoration(
-                    hintText: "Recommended age",
-                    labelText: "from",
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                  ),
-                  onChanged: (String? value) {
-                    setState(() {
-                      _min_age = int.parse(value!);
-                    });
-                  },
-                  validator: (String? value) {
-                    if (value == null || value.isEmpty) {
-                      return "Please enter recommended age!";
-                    }
-                    if (int.tryParse(value) == null) {
-                      return "Recommended age must be a number!";
-                    }
-                    return null;
-                  },
-                ),
-                TextFormField(
-                  decoration: InputDecoration(
-                    hintText: "Recommended age",
-                    labelText: "until",
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                  ),
-                  onChanged: (String? value) {
-                    setState(() {
-                      _max_age = int.parse(value!);
-                    });
-                  },
-                  validator: (String? value) {
-                    if (value == null || value.isEmpty) {
-                      return "Please enter recommended age!";
-                    }
-                    if (int.tryParse(value) == null) {
-                      return "Recommended age must be a number!";
-                    }
-                    return null;
-                  },
-                ),
-              ])),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextFormField(
-              decoration: InputDecoration(
-                hintText: "Description",
-                labelText: "Description",
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(5.0),
-                ),
-              ),
-              onChanged: (String? value) {
-                setState(() {
-                  _description = value!;
-                });
-              },
-              validator: (String? value) {
-                if (value == null || value.isEmpty) {
-                  return "Please enter book description!";
-                }
-                return null;
-              },
-            ),
-          ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ElevatedButton(
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(Colors.indigo),
-                ),
-                onPressed: () async {
-                  if (_formKey.currentState!.validate()) {
-                    final response = await request.postJson(
-                        "http://localhost:8000/add-book-flutter/",
-                        jsonEncode(<String, String>{
-                          'judul': _name,
-                          'author': _artist,
-                          'min_age': _min_age.toString(),
-                          'max_age': _max_age.toString(),
-                          'image_url': _image_url,
-                          'description': _description,
-                        }));
-                    if (response['status'] == 'success') {
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        content: Text("Buku baru berhasil disimpan!"),
-                      ));
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (context) => MyHomePage()),
-                      );
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        content: Text("Terdapat kesalahan, silakan coba lagi."),
-                      ));
-                    }
-                  }
-                },
-                child: const Text(
-                  "Tambahkan",
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-            ),
-          ),
-        ])),
-      ),
-    );
+        );
   }
 }

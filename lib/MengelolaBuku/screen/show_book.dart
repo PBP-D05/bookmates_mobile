@@ -66,7 +66,7 @@ Widget build(BuildContext context) {
                             itemCount: snapshot.data!.length,
                             itemBuilder: (_, index) => ListTile(
                                 title: Container(
-                                        color: const Color(0xFFF3E8EA),
+                                        color: Colors.pink.shade50,
                                         margin: const EdgeInsets.symmetric(
                                             horizontal: 16, vertical: 12),
                                         padding: const EdgeInsets.all(20.0),
@@ -79,7 +79,7 @@ Widget build(BuildContext context) {
                                             Text(
                                                 "${snapshot.data![index].fields.judul}".toUpperCase(),
                                                 style: const TextStyle(
-                                                fontSize: 35.0,
+                                                fontSize: 30.0,
                                                 fontFamily: 'Kavoon',
                                                 fontWeight: FontWeight.bold,
                                                 color: Color(0xFF45425A),
@@ -89,30 +89,41 @@ Widget build(BuildContext context) {
                                             // Row(
                                             //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                             //     children: [
-                                            Image.network(
+                                            Padding(
+                                                padding: const EdgeInsets.only(top: 16.0, bottom: 16.0),
+                                                child:
+                                            Center(
+                                                child: Image.network(
                                                 snapshot.data![index].fields.imageUrl,
-                                                width: 100.0, // adjust the width as needed
-                                                height: 150.0, // adjust the height as needed
-                                                // fit: BoxFit.cover, // adjust the BoxFit as needed
+                                                width: 200.0, // adjust the width as needed
+                                                height: 250.0, // adjust the height as needed
+                                                fit: BoxFit.fill, // adjust the BoxFit as needed
+                                            )
+                                            )
                                             ),
+                                            
                                                     // Column(
                                                     //     children:[
                                             Text("Author: ${snapshot.data![index].fields.author}",
                                                 style: const TextStyle(
-                                                fontSize: 20.0,
+                                                fontSize: 16.0,
                                                 fontFamily: 'Indie Flower',
                                                 color: Color(0xFF45425A),
                                                 ),
                                             ),
+                                            Padding(
+                                                padding: const EdgeInsets.only(top: 12.0, bottom:12.0),
+                                                child:
                                             Text(
                                                 snapshot.data![index].fields.maxAge == 99 ? 
                                                     "Recommended age: ${snapshot.data![index].fields.minAge}+ years"
                                                     : "Recommended age: ${snapshot.data![index].fields.minAge} - ${snapshot.data![index].fields.maxAge} years",
                                                 style: const TextStyle(
-                                                fontSize: 20.0,
+                                                fontSize: 16.0,
                                                 fontFamily: 'Indie Flower',
                                                 color: Color(0xFF45425A),
                                                 ),
+                                            )
                                             ),
                                             RatingBarIndicator(
                                                 rating: snapshot.data![index].fields.rating,
@@ -130,6 +141,9 @@ Widget build(BuildContext context) {
                                             // ),
 
 
+                                            Padding(
+                                                padding: const EdgeInsets.only(top: 16),
+                                                child:
                                             ElevatedButton(
                                                 child: Icon(
                                                     Icons.delete,
@@ -164,6 +178,7 @@ Widget build(BuildContext context) {
                                                             ));
                                                         }
                                                     }
+                                            )
                                             )
                                             ],
                                         ),

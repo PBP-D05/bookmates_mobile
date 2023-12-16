@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:bookmates_mobile/DashboardUser/screen/dashboard.dart';
 import 'package:bookmates_mobile/Ratings/model/reviews.dart';
+import 'package:bookmates_mobile/Ratings/screen/ratingPage.dart';
 import 'package:bookmates_mobile/models/buku.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -28,7 +29,10 @@ class _RatingBoxWidgetState extends State<RatingBoxWidget> {
       if (value == null) {
         return [];
       }
+      // print(value);
       var jsonValue = jsonDecode(value);
+      // print("JS VAL $jsonValue");
+      // print("JS VAL ${jsonValue['text']}");
       List<Reviews> listItem = [];
       for (var data in jsonValue) {
         if (data != null) {
@@ -37,8 +41,6 @@ class _RatingBoxWidgetState extends State<RatingBoxWidget> {
       }
       return listItem;
     });
-    // Future<List<Reviews.Reviews>> reviews;
-    // TODO: HTTP REQUEST TO BACKEDN REVIEWS
 
     return Center(
       child: Container(
@@ -49,9 +51,7 @@ class _RatingBoxWidgetState extends State<RatingBoxWidget> {
         child: Column(
           children: [
             // TODO: ADD IF CONDITIONAL
-            TextFieldReviewBox(
-                context.watch<UserProvider>().loggedInUserName ?? "",
-                widget.buku),
+            TextFieldReviewBox(widget.buku),
             FutureBuilder(
                 future: data,
                 builder: (context, AsyncSnapshot snapshot) {
@@ -78,7 +78,7 @@ class _RatingBoxWidgetState extends State<RatingBoxWidget> {
                               margin: const EdgeInsets.symmetric(
                                   horizontal: 0, vertical: 12),
                               child: SingleReviewBox(
-                                  snapshot.data![index].fields.user.toString(),
+                                  snapshot.data![index].fields.user,
                                   snapshot.data![index].fields.text,
                                   snapshot.data![index].fields.rating)));
                     }
@@ -92,22 +92,25 @@ class _RatingBoxWidgetState extends State<RatingBoxWidget> {
 }
 
 class TextFieldReviewBox extends StatefulWidget {
-  String nama;
   Buku buku;
 
-  TextFieldReviewBox(this.nama, this.buku, {super.key});
+  TextFieldReviewBox(this.buku, {super.key});
 
   @override
   State<TextFieldReviewBox> createState() => _TextFieldReviewBoxState();
 }
 
 class _TextFieldReviewBoxState extends State<TextFieldReviewBox> {
-  double givenRating = 0;
+  double givenRating = 3;
   final TextEditingController contentController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     final request = context.watch<CookieRequest>();
+
+    Future<String> username = request
+        .get("http://127.0.0.1:8000/challenge/get_current_username/")
+        .then((value) => jsonDecode(value)['username']);
 
     return Padding(
       padding: const EdgeInsets.all(30),
@@ -121,22 +124,33 @@ class _TextFieldReviewBoxState extends State<TextFieldReviewBox> {
             const Text(
               'Berikan Review!',
               style: TextStyle(
-                fontSize: 22,
+                fontSize: 26.0,
                 fontWeight: FontWeight.bold,
+                fontFamily: 'Kavoon',
               ),
               textAlign: TextAlign.start,
             ),
             const SizedBox(height: 10),
-            Text(
-              widget.nama,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-              ),
-              textAlign: TextAlign.start,
-            ),
+            FutureBuilder(
+                future: username,
+                builder: (context, AsyncSnapshot snapshot) {
+                  if (snapshot.data == null) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else {
+                    return Text(
+                      snapshot.data,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                        fontFamily: 'Indie Flower',
+                      ),
+                      textAlign: TextAlign.start,
+                    );
+                  }
+                }),
             const SizedBox(height: 10),
             RatingBar.builder(
-              initialRating: 3,
+              initialRating: givenRating,
               minRating: 0,
               maxRating: 5,
               direction: Axis.horizontal,
@@ -163,6 +177,9 @@ class _TextFieldReviewBoxState extends State<TextFieldReviewBox> {
                 child: TextField(
                   minLines: 1,
                   maxLines: 5,
+                  style: TextStyle(
+                    fontFamily: 'Indie Flower',
+                  ),
                   controller: contentController,
                   decoration: new InputDecoration.collapsed(
                       hintText:
@@ -171,32 +188,56 @@ class _TextFieldReviewBoxState extends State<TextFieldReviewBox> {
             SizedBox(height: 10),
             ElevatedButton(
                 onPressed: () async {
-                  // final response = await request.postJson(
-                  //   "http://127.0.0.1:8000/add_data_flutter",
-                  //   jsonEncode(<String, String>{
-                  //     "name": _name,
-                  //     "amount": _amount.toString(),
-                  //     "price": _price.toString(),
-                  //     "description": _description
-                  //   }));
-                  // if (response['status'] == 'success') {
-                  var response = await request
-                      .postJson(
-                          "http://127.0.0.1:8000/challenge/post_reviews",
-                          jsonEncode(<String, String>{
-                            "pk": widget.buku.pk.toString(),
-                            "text": contentController.text,
-                            "rating": givenRating.toString()
-                          }))
-                      .then((value) => jsonDecode(value));
-                  print("SENDED RESPONSE $response");
+                  var response = await request.postJson(
+                      "http://127.0.0.1:8000/challenge/post_reviews",
+                      jsonEncode(<String, String>{
+                        "pk": widget.buku.pk.toString(),
+                        "text": contentController.text,
+                        "rating": givenRating.toString()
+                      }));
+
                   if (response['status'] == 'ok') {
-                    // TODO OK
+                    showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: const Text('Review Berhasil Dikirim'),
+                        content:
+                            Text('Terima kasih sudah memberikan review anda'),
+                        actions: [
+                          TextButton(
+                            child: const Text('Sama-sama'),
+                            onPressed: () {
+                              Navigator.pop(context);
+                              Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          RatingPage(widget.buku)));
+                            },
+                          ),
+                        ],
+                      ),
+                    );
                   } else {
-                    // TODO BAD
+                    showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: const Text('Review Gagal Dikirim'),
+                        content:
+                            Text('Mohon coba lagi setelah beberapa waktu...'),
+                        actions: [
+                          TextButton(
+                            child: const Text('OK'),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                          ),
+                        ],
+                      ),
+                    );
                   }
                 },
-                child: Text("Kirim Jawaban!")),
+                child: const Text("Kirim Jawaban!")),
             SizedBox(height: 10),
           ],
         ),
@@ -206,14 +247,19 @@ class _TextFieldReviewBoxState extends State<TextFieldReviewBox> {
 }
 
 class SingleReviewBox extends StatelessWidget {
-  final String name;
+  final int pk;
   final String text;
-  final int rating;
+  double rating;
 
-  const SingleReviewBox(this.name, this.text, this.rating, {super.key});
+  SingleReviewBox(this.pk, this.text, this.rating, {super.key});
 
   @override
   Widget build(BuildContext context) {
+    final request = context.watch<CookieRequest>();
+    Future<String> username = request
+        .get("http://127.0.0.1:8000/challenge/get_username/$pk")
+        .then((value) => jsonDecode(value)['username']);
+
     return Padding(
       padding: const EdgeInsets.all(30),
       child: Container(
@@ -223,13 +269,23 @@ class SingleReviewBox extends StatelessWidget {
         child: Column(
           children: [
             const SizedBox(height: 10),
-            Text(
-              name,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-              ),
-              textAlign: TextAlign.start,
-            ),
+            FutureBuilder(
+                future: username,
+                builder: (context, AsyncSnapshot snapshot) {
+                  if (snapshot.data == null) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else {
+                    return Text(
+                      snapshot.data,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                        fontFamily: 'Indie Flower',
+                      ),
+                      textAlign: TextAlign.start,
+                    );
+                  }
+                }),
             const SizedBox(height: 10),
             RatingBar.builder(
               initialRating: rating.toDouble(),
@@ -257,8 +313,13 @@ class SingleReviewBox extends StatelessWidget {
                   minLines: 1,
                   maxLines: 5,
                   enabled: false,
-                  decoration:
-                      new InputDecoration.collapsed(hintText: this.text),
+                  style: const TextStyle(
+                    fontFamily: 'Indie Flower',
+                  ),
+                  // controller: TextEditingController()..text = 'Your initial value',
+                  decoration: new InputDecoration.collapsed(
+                      hintText: this.text,
+                      hintStyle: TextStyle(color: Colors.black)),
                 )),
             SizedBox(height: 25),
           ],
