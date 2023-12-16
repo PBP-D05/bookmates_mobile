@@ -57,14 +57,14 @@ class LeftDrawer extends StatelessWidget {
           ListTile(
             leading: Icon(Icons.leaderboard),
             title: Text('Leaderboard'),
-            // Bagian redirection ke ShopFormPage
-            // onTap: () {
-            //     Navigator.pushReplacement(
-            //         context,
-            //         MaterialPageRoute(
-            //         builder: (context) => ShopFormPage(),
-            //         ));
-            // },
+            
+            onTap: () {
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                    builder: (context) => LeaderboardPage(),
+                    ));
+            },
           ),
           ListTile(
             leading: Icon(Icons.power_settings_new_outlined),

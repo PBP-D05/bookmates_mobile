@@ -108,17 +108,15 @@ class _RegisterPageState extends State<RegisterPage> {
                 String passwordConfirmation =
                     _passwordConfirmationController.text;
 
-                
                 if (username.isEmpty) {
                   ScaffoldMessenger.of(context)
-                  ..hideCurrentSnackBar()
-                  ..showSnackBar(const SnackBar(
-                    content: Text("Please enter a username."),
-                  ));
-                return;
-              }
+                    ..hideCurrentSnackBar()
+                    ..showSnackBar(const SnackBar(
+                      content: Text("Please enter a username."),
+                    ));
+                  return;
+                }
 
-          
                 if (password != passwordConfirmation) {
                   ScaffoldMessenger.of(context)
                     ..hideCurrentSnackBar()
@@ -127,7 +125,6 @@ class _RegisterPageState extends State<RegisterPage> {
                             "Register failed, password verification incorrect.")));
                   return;
                 }
-                
 
                 // print("DEBUG: $username $password");
 
@@ -141,12 +138,10 @@ class _RegisterPageState extends State<RegisterPage> {
                   },
                 );
 
-                  
+                
                 userProvider.setTeacherStatus(response['is_teacher']);
-                  
                 if (response['status']) {
                   String message = response['message'];
-                 
 
                   // Redirecting to login page after successful registration
                   Navigator.pushReplacement(
@@ -177,7 +172,6 @@ class _RegisterPageState extends State<RegisterPage> {
               },
               child: const Text('Register'),
             ),
-
             const SizedBox(height: 12.0),
             ElevatedButton(
               onPressed: () {
