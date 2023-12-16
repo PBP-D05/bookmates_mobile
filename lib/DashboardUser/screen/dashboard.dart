@@ -22,16 +22,6 @@ class UserProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  // void setLoggedInUser(Pengguna user) {
-  //   loggedInUser = user;
-  //   isGuru = user.fields.isGuru;
-  //   notifyListeners();
-  // }
-
-  // bool isUserGuru(Pengguna user) {
-  //   return user.fields.isGuru;
-  // }
-
   void setTeacherStatus(bool value) {
     _isTeacher = value;
     notifyListeners();
@@ -142,118 +132,193 @@ class _DashboardPageState extends State<DashboardPage> {
   Widget build(BuildContext context) {
     final request = context.watch<CookieRequest>();
     final userProvider = context.watch<UserProvider>();
-
-    
-
     return Scaffold(
       appBar: myAppBar("Dashboard"),
-      // appBar: AppBar(
-      //   title: const Text(
-      //     'BookMates',
-      //   ),
-      //   backgroundColor: Colors.pink.shade200,
-      //   foregroundColor: const Color.fromRGBO(69, 66, 90, 1),
-      // ),
       drawer: const LeftDrawer(),
-      backgroundColor: const Color.fromRGBO(243, 232, 234, 1),
+      backgroundColor: Colors.white,
       body: FutureBuilder<List<Buku>>(
-          future: _booksFuture,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(
-                  child:
-                      CircularProgressIndicator()); // Show a loading indicator while waiting for data
-            } else if (snapshot.hasError) {
-              return Text('Error: ${snapshot.error}');
-            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return Text('No data available');
-            } else {
-              List<Buku> allBooks = snapshot.data!;
-              return ListView(children: [
-                
-                Container(
-                  width: 10,
-                  height:50,
-                  child:ElevatedButton(
-                  onPressed: () {
-                    if (userProvider._isTeacher) {
-                      // Navigate to the page only if the user is a teacher
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => BookPage()),
-                      );
-                    } else {
-                      // Show a message or handle the case when the user is not a teacher
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                              "You need to be a teacher to access this page."),
-                        ),
-                      );
-                    }
-                  },
-                  
-                  child: Text('Organize Books'),
-                ),),
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
-                        child: Row(
-                          children: [
-                            SizedBox(width: 8),
-                            Icon(Icons.person),
-                            SizedBox(width: 10),
-                            Text(
-                                context
-                                            .watch<UserProvider>()
-                                            .loggedInUserName !=
-                                        null
-                                    ? 'Hello ${context.watch<UserProvider>().loggedInUserName}!'
-                                    : 'Hello, user!',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: 17,
-                                  fontFamily: 'Kavoon',
-                                ),
-                              ),
-                            SizedBox(width: 9),
-                            ElevatedButton(
-                              onPressed: () =>
-                                  _showEditNameDialog(context, request),
-                              child: Text('Edit Name'),
-                            ),
-                          ],
+        future: _booksFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return Center(
+              child: Text('No data available'),
+            );
+          } else {
+            List<Buku> allBooks = snapshot.data!;
+            return Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Row(
+                    children: [
+                      SizedBox(width: 8),
+                      Icon(Icons.person),
+                      SizedBox(width: 10),
+                      Text(
+                        context.watch<UserProvider>().loggedInUserName != null
+                            ? 'Hello ${context.watch<UserProvider>().loggedInUserName}!'
+                            : 'Hello, user!',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 17,
+                          fontFamily: 'Kavoon',
                         ),
                       ),
-                      GridView.count(
-                        primary: true,
-                        padding: const EdgeInsets.all(20),
-                        crossAxisSpacing: 10,
-                        mainAxisSpacing: 10,
-                        crossAxisCount: 3,
-                        shrinkWrap: true,
-                        children: allBooks.map((Buku book) {
-                          return InkWell(
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: ((context) =>
-                                            RatingPage(book))));
-                              },
-                              child: BookCard(book));
-                        }).toList(),
+                      SizedBox(width: 9),
+                      ElevatedButton(
+                        onPressed: () => _showEditNameDialog(context, request),
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.pink.shade400,
+                          onPrimary: Colors.white,
+                        ),
+                        child: Text('Edit Name'),
                       ),
                     ],
                   ),
-                ),
-              ]);
-            }
-          }),
+                  SizedBox(height: 20),
+
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            if (userProvider._isTeacher) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => BookPage()),
+                              );
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    "You need to be a writer to access this page."),
+                                ),
+                              );
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(1),
+                            ),
+                          ),
+                          child: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                            child: Text('Show My Books'),
+                          ),
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            if (userProvider._isTeacher) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => BookPage()),
+                              );
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    "You need to be a writer to access this page."),
+                                ),
+                              );
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(1),
+                            ),
+                          ),
+                          child: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                            child: Text('Add Books'),
+                          ),
+                    ),
+                  ],
+                    ),
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: allBooks.length,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Card(
+                            margin: EdgeInsets.all(10),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            elevation: 5,
+                            child: ListTile(
+                              leading: Image.network(
+                                allBooks[index].fields.imageUrl,
+                                width: 60,
+                                height: 75,
+                                fit: BoxFit.cover,
+                              ),
+                              title: Text(
+                                allBooks[index].fields.judul,
+                                style: TextStyle(
+                                  fontFamily: 'Kavoon',
+                                  fontSize: 20,
+                                  color: Color(0xFF45425A),
+                                ),
+                              ),
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Author: ${allBooks[index].fields.author}',
+                                    style: TextStyle(
+                                      fontFamily: 'Indie Flower',
+                                      fontSize: 16,
+                                      color: Color(0xFF4CAF50),
+                                    ),
+                                  ),
+                                  Text(
+                                    'Age: ${allBooks[index].fields.minAge} - ${allBooks[index].fields.maxAge} years',
+                                    style: TextStyle(
+                                      fontFamily: 'Indie Flower',
+                                      fontSize: 16,
+                                      color: Color(0xFF4CAF50),
+                                    ),
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        'Rating: ${allBooks[index].fields.rating}',
+                                        style: TextStyle(fontSize: 14),
+                                      ),
+                                      Icon(Icons.star, size: 14),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        RatingPage(allBooks[index]),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
+        },
+      ),
     );
   }
 }
@@ -265,32 +330,26 @@ class BookCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
+    return Card(
+      margin: EdgeInsets.all(10),
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 8,
-          ),
-        ],
       ),
-      child: Card(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
+      elevation: 5,
+      child: SizedBox(
+        width: 10,
+        height: 10, // Ubah lebar kartu di sini
         child: Padding(
             padding: EdgeInsets.all(10),
             child: SingleChildScrollView(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Image.network(
                     book.fields.imageUrl,
-                    width: 140,
-                    height: 180,
+                    width: 160, // Ubah lebar gambar di sini
+                    height: 175, // Ubah tinggi gambar di sini
                     fit: BoxFit.cover,
                   ),
                   SizedBox(height: 10),
