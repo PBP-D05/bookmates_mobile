@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'login.dart';
+import 'package:bookmates_mobile/DashboardUser/screen/dashboard.dart';
 
 void main() {
   runApp(const RegisterApp());
@@ -42,6 +43,8 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     final request = context.watch<CookieRequest>();
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+
     return Scaffold(
       appBar: myAppBar("Register"),
       body: Padding(
@@ -98,24 +101,22 @@ class _RegisterPageState extends State<RegisterPage> {
               ],
             ),
             const SizedBox(height: 24.0),
-              ElevatedButton(
+            ElevatedButton(
               onPressed: () async {
                 String username = _usernameController.text;
                 String password = _passwordController.text;
                 String passwordConfirmation =
                     _passwordConfirmationController.text;
 
-                
                 if (username.isEmpty) {
                   ScaffoldMessenger.of(context)
-                  ..hideCurrentSnackBar()
-                  ..showSnackBar(const SnackBar(
-                    content: Text("Please enter a username."),
-                  ));
-                return;
-              }
+                    ..hideCurrentSnackBar()
+                    ..showSnackBar(const SnackBar(
+                      content: Text("Please enter a username."),
+                    ));
+                  return;
+                }
 
-          
                 if (password != passwordConfirmation) {
                   ScaffoldMessenger.of(context)
                     ..hideCurrentSnackBar()
@@ -124,7 +125,6 @@ class _RegisterPageState extends State<RegisterPage> {
                             "Register failed, password verification incorrect.")));
                   return;
                 }
-                
 
                 // print("DEBUG: $username $password");
 
@@ -134,10 +134,12 @@ class _RegisterPageState extends State<RegisterPage> {
                   {
                     'username': username,
                     'password': password,
-                    'is_teacher' : _isTeacher? 'true' : 'false'
+                    'is_teacher': _isTeacher ? 'true' : 'false'
                   },
                 );
 
+                
+                userProvider.setTeacherStatus(response['is_teacher']);
                 if (response['status']) {
                   String message = response['message'];
 
@@ -170,6 +172,17 @@ class _RegisterPageState extends State<RegisterPage> {
               },
               child: const Text('Register'),
             ),
+            const SizedBox(height: 12.0),
+            ElevatedButton(
+              onPressed: () {
+                // Navigate to Login
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginPage()),
+                );
+              },
+              child: const Text('Login'),
+            )
           ],
         ),
       ),
