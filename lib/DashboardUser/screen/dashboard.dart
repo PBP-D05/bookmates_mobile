@@ -8,13 +8,28 @@ import 'package:bookmates_mobile/models/buku.dart';
 import 'package:bookmates_mobile/LoginRegister/screens/login.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
+import 'package:bookmates_mobile/models/pengguna.dart';
+import 'package:bookmates_mobile/MengelolaBuku/screen/show_book.dart';
+import 'package:bookmates_mobile/MengelolaBuku/screen/add_book.dart';
 
 class UserProvider with ChangeNotifier {
-  String? loggedInUserName;
+  String loggedInUserName = "";
+  Pengguna? loggedInUser;
+  bool? isGuru;
+  bool _isTeacher = false;
 
   void setLoggedInUserName(String userName) {
     loggedInUserName = userName;
     notifyListeners();
+  }
+
+  void setTeacherStatus(bool value) {
+    _isTeacher = value;
+    notifyListeners();
+  }
+
+  bool isTeacher() {
+    return _isTeacher;
   }
 }
 
@@ -27,6 +42,7 @@ class DashboardPage extends StatefulWidget {
 
 class _DashboardPageState extends State<DashboardPage> {
   Future<List<Buku>>? _booksFuture;
+  Future<Pengguna>? user;
 
   @override
   void initState() {
@@ -34,9 +50,19 @@ class _DashboardPageState extends State<DashboardPage> {
     _booksFuture = fetchData();
   }
 
+  Future<Pengguna> fetch() async {
+    var url = Uri.parse('http://127.0.0.1:8000/auth/login/');
+    var response =
+        await http.get(url, headers: {"Content-Type": "application/json"});
+    var data = jsonDecode(utf8.decode(response.bodyBytes));
+    Pengguna user = Pengguna.fromJson(data);
+    String username = data.user.fields.toString();
+    return data;
+  }
+
   Future<List<Buku>> fetchData() async {
     try {
-      var url = Uri.parse('http://127.0.0.1:8000/editbuku/get-books-json');
+      var url = Uri.parse('http://127.0.0.1:8000/editbuku/get-books-json/');
       var response = await http.get(
         url,
         headers: {"Content-Type": "application/json"},
@@ -63,7 +89,6 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   void _showEditNameDialog(BuildContext context, CookieRequest request) {
-    print("a");
     TextEditingController _nameController = TextEditingController();
     showDialog(
       context: context,
@@ -78,12 +103,17 @@ class _DashboardPageState extends State<DashboardPage> {
             onPressed: () async {
               String newName = _nameController.text.trim();
               if (newName.isNotEmpty) {
-                context.read<UserProvider>().setLoggedInUserName(newName);
-
                 try {
-                  final response = await request.postJson(
-                      "http://127.0.0.1:8000/update_user_name/",
-                      jsonEncode(<String, String>{"newName": newName}));
+                  // print(request.jsonData.toString());
+                  final response = await request.post(
+                    'http://127.0.0.1:8000/update_user_name/',
+                    {'name': newName, 'id': request.jsonData['id'].toString()},
+                  );
+                  if (context.mounted && response['status']) {
+                    context
+                        .read<UserProvider>()
+                        .setLoggedInUserName(response['username']);
+                  }
                 } catch (error) {
                   print('Error sending request to update name: $error');
                   // Handle the error accordingly
@@ -107,91 +137,143 @@ class _DashboardPageState extends State<DashboardPage> {
   @override
   Widget build(BuildContext context) {
     final request = context.watch<CookieRequest>();
-
+    final userProvider = context.watch<UserProvider>();
     return Scaffold(
       appBar: myAppBar("Dashboard"),
-      // appBar: AppBar(
-      //   title: const Text(
-      //     'BookMates',
-      //   ),
-      //   backgroundColor: Colors.pink.shade200,
-      //   foregroundColor: const Color.fromRGBO(69, 66, 90, 1),
-      // ),
       drawer: const LeftDrawer(),
-      backgroundColor: const Color.fromRGBO(243, 232, 234, 1),
+      backgroundColor: Colors.white,
       body: FutureBuilder<List<Buku>>(
-          future: _booksFuture,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator()); // Show a loading indicator while waiting for data
-            } else if (snapshot.hasError) {
-              return Text('Error: ${snapshot.error}');
-            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return Text('No data available');
-            } else {
-              List<Buku> allBooks = snapshot.data!;
-              return ListView(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Padding(
-                          padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
-                          child: Row(
-                            children: [
-                              SizedBox(width: 8),
-                              Icon(Icons.person),
-                              SizedBox(width: 10),
-                              Text(
-                                context
-                                            .watch<UserProvider>()
-                                            .loggedInUserName !=
-                                        null
-                                    ? 'Hello, ${context.watch<UserProvider>().loggedInUserName}!'
-                                    : 'Hello, user!',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: 17,
-                                  fontFamily: 'Kavoon',
+        future: _booksFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return Center(
+              child: Text('No data available'),
+            );
+          } else {
+            List<Buku> allBooks = snapshot.data!;
+
+            return SingleChildScrollView(
+              child: Column(
+                children: <Widget>[
+                  SizedBox(height: 20,),
+                  Row(
+                    children: [
+                      SizedBox(
+                        width: 8,
+                        height: 20,
+                      ),
+                      Icon(Icons.person),
+                      SizedBox(width: 10, height: 20,),
+                      Text(
+                        userProvider.loggedInUserName.isNotEmpty
+                            ? 'Hello ${userProvider.loggedInUserName}!'
+                            : 'Hello ${request.jsonData['username']}!',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 17,
+                          fontFamily: 'Kavoon',
+                        ),
+                      ),
+                      SizedBox(
+                        width: 9,
+                        height: 20,
+                      ),
+                      ElevatedButton(
+                        onPressed: () => _showEditNameDialog(context, request),
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.pink.shade400,
+                          onPrimary: Colors.white,
+                        ),
+                        child: Text('Edit Name'),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          if (userProvider.isTeacher()) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => BookPage(),
+                              ),
+                            );
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  "You need to be a writer to access this page.",
                                 ),
                               ),
-                              SizedBox(width: 9),
-                              ElevatedButton(
-                                onPressed: () =>
-                                    _showEditNameDialog(context, request),
-                                child: Text('Edit Name'),
-                              ),
-                            ],
+                            );
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(1),
                           ),
                         ),
-                        GridView.count(
-                          primary: true,
-                          padding: const EdgeInsets.all(20),
-                          crossAxisSpacing: 10,
-                          mainAxisSpacing: 10,
-                          crossAxisCount: 3,
-                          shrinkWrap: true,
-                          children: allBooks.map((Buku book) {
-                            return InkWell(
-                                onTap: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: ((context) =>
-                                              RatingPage(book))));
-                                },
-                                child: BookCard(book));
-                          }).toList(),
+                        child: Container(
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          child: Text('Show My Books'),
                         ),
-                      ],
-                    ),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          if (userProvider.isTeacher()) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => BookFormPage(),
+                              ),
+                            );
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  "You need to be a writer to access this page.",
+                                ),
+                              ),
+                            );
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(1),
+                          ),
+                        ),
+                        child: Container(
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          child: Text('Add Books'),
+                        ),
+                      ),
+                    ],
+                  ),
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: allBooks.length,
+                    itemBuilder: (context, index) {
+                      return BookCard(allBooks[index]);
+                    },
                   ),
                 ],
-              );
-            }
-          }),
+              ),
+            );
+          }
+        },
+      ),
     );
   }
 }
@@ -203,73 +285,77 @@ class BookCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        color: Colors.white,
+    return Card(
+      margin: EdgeInsets.all(10),
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 8,
-          ),
-        ],
       ),
-      child: Card(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Padding(
-            padding: EdgeInsets.all(10),
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.network(
+      child: Padding(
+        padding: EdgeInsets.all(10),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Left side with the image
+            Container(
+              width: 150, // Adjust image width as needed
+              height: 175, // Adjust image height as needed
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                image: DecorationImage(
+                  image: NetworkImage(
                     book.fields.imageUrl,
-                    width: 80,
-                    height: 120,
-                    fit: BoxFit.cover,
                   ),
-                  SizedBox(height: 10),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            SizedBox(width: 10), // Add some space between the image and text
+            // Right side with information
+            Expanded(
+              flex: 3,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
                   Text(
                     book.fields.judul,
-                    textAlign: TextAlign.center,
                     style: TextStyle(
                       fontFamily: 'Kavoon',
-                      fontSize: 12,
+                      fontSize: 20,
                       color: Color(0xFF45425A),
                     ),
                   ),
+                  SizedBox(height: 5),
                   Text(
-                    'Author ${book.fields.author}',
+                    'Author: ${book.fields.author}',
                     style: TextStyle(
                       fontFamily: 'Indie Flower',
-                      fontSize: 10,
+                      fontSize: 16,
                       color: Color(0xFF4CAF50),
                     ),
                   ),
                   Text(
-                    'Age ${book.fields.minAge} - ${book.fields.maxAge} years',
+                    'Age: ${book.fields.minAge} - ${book.fields.maxAge} years',
                     style: TextStyle(
                       fontFamily: 'Indie Flower',
-                      fontSize: 10,
+                      fontSize: 16,
                       color: Color(0xFF4CAF50),
                     ),
                   ),
+                  SizedBox(height: 5),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        '${book.fields.rating}',
-                        style: TextStyle(fontSize: 12),
+                        'Rating: ${book.fields.rating}',
+                        style: TextStyle(fontSize: 14),
                       ),
-                      Icon(Icons.star, size: 12),
+                      Icon(Icons.star, size: 14),
                     ],
                   ),
                 ],
               ),
-            )),
+            ),
+          ],
+        ),
       ),
     );
   }
