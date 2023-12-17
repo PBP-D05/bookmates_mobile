@@ -72,12 +72,14 @@ Widget build(BuildContext context) {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                     Text(
-                                    "${snapshot.data![index].fields.user}",
-                                    style: const TextStyle(
+                                      "${snapshot.data![index].fields.user}",
+                                      style: const TextStyle(
                                         fontSize: 18.0,
                                         fontWeight: FontWeight.bold,
+                                      ),
                                     ),
-                                    ),
+                                    const SizedBox(height: 10),
+                                    Text("${snapshot.data![index].fields.isguru}"),
                                     const SizedBox(height: 10),
                                     Text("${snapshot.data![index].fields.banyakReview}"),
                                     const SizedBox(height: 10),
