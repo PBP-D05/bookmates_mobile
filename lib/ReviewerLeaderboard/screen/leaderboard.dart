@@ -1,192 +1,94 @@
-// import 'package:flutter/material.dart';
-
-// class LeaderboardPage extends StatelessWidget {
-//   const LeaderboardPage({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       theme: ThemeData(
-//         primarySwatch: Colors.pink,
-//       ),
-//       home: Scaffold(
-//         appBar: AppBar(title: const Text('Leaderboard')),
-//         body: Row(
-//           mainAxisSize: MainAxisSize.max,
-//           mainAxisAlignment: MainAxisAlignment.center,
-//           children: [
-//             const Leaderboard()
-//           ]
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-// class Leaderboard extends StatelessWidget {
-//   const Leaderboard({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return DataTable(
-//       columnSpacing: 100.0,
-//       columns: const <DataColumn>[
-//         DataColumn(
-//           label: Expanded(
-//             child: Text(
-//               'Name',
-//               style: TextStyle(fontStyle: FontStyle.italic),
-//             ),
-//           ),
-//         ),
-//         DataColumn(
-//           label: Expanded(
-//             child: Text(
-//               'Teacher Status',
-//               style: TextStyle(fontStyle: FontStyle.italic),
-//             ),
-//           ),
-//         ),
-//         DataColumn(
-//           label: Expanded(
-//             child: Text(
-//               'Total Review',
-//               style: TextStyle(fontStyle: FontStyle.italic),
-//             ),
-//           ),
-//         ),
-//         DataColumn(
-//           label: Expanded(
-//             child: Text(
-//               'Total Stars',
-//               style: TextStyle(fontStyle: FontStyle.italic),
-//             ),
-//           ),
-//         ),
-//       ],
-//       rows: const <DataRow>[
-//         DataRow(
-//           cells: <DataCell>[
-//             DataCell(Text('a')),
-//             DataCell(Text('a')),
-//             DataCell(Text('a')),
-//             DataCell(Text('a')),
-//           ],
-//         ),
-//         DataRow(
-//           cells: <DataCell>[
-//             DataCell(Text('b')),
-//             DataCell(Text('b')),
-//             DataCell(Text('b')),
-//             DataCell(Text('a')),
-//           ],
-//         ),
-//         DataRow(
-//           cells: <DataCell>[
-//             DataCell(Text('c')),
-//             DataCell(Text('c')),
-//             DataCell(Text('c')),
-//             DataCell(Text('a')),
-//           ],
-//         ),
-//       ],
-//     );
-//   }
-// }
-
 import 'package:flutter/material.dart';
 import 'package:bookmates_mobile/DashboardUser/screen/sidebar.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:bookmates_mobile/models/reviewer.dart';
 
-class LeaderboardPage extends StatelessWidget {
-  const LeaderboardPage({Key? key}) : super(key: key);
+class LeaderboardPage extends StatefulWidget {
+    const LeaderboardPage({Key? key}) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
-        primarySwatch: Colors.pink,
-      ),
-      home: Scaffold(
-        appBar: AppBar(title: const Text('Leaderboard')),
-        body: Center(
-          child: Container(
-            width: MediaQuery.of(context).size.width * 0.9,
-            child: SingleChildScrollView(
-              child: Leaderboard(),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
+    @override
+    _LeaderboardPageState createState() => _LeaderboardPageState();
 }
 
-class Leaderboard extends StatelessWidget {
-  const Leaderboard({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return DataTable(
-      columnSpacing: 0.0,
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.black), // Add border to the table
-      ),
-      columns: const <DataColumn>[
-        DataColumn(
-          label: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Center(
-              child: Text(
-                'Name',
-                style: TextStyle(fontStyle: FontStyle.italic),
-              ),
-            ),
-          ),
-        ),
-        DataColumn(
-          label: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Center(
-              child: Text(
-                'Teacher Status',
-                style: TextStyle(fontStyle: FontStyle.italic),
-              ),
-            ),
-          ),
-        ),
-        DataColumn(
-          label: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Center(
-              child: Text(
-                'Total Review',
-                style: TextStyle(fontStyle: FontStyle.italic),
-              ),
-            ),
-          ),
-        ),
-        DataColumn(
-          label: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Center(
-              child: Text(
-                'Total Stars',
-                style: TextStyle(fontStyle: FontStyle.italic),
-              ),
-            ),
-          ),
-        ),
-      ],
-      rows: const <DataRow>[
-        DataRow(
-          cells: <DataCell>[
-            DataCell(Center(child: Text('a'))),
-            DataCell(Center(child: Text('a'))),
-            DataCell(Center(child: Text('a'))),
-            DataCell(Center(child: Text('a'))),
-          ],
-        ),
-      ],
+class _LeaderboardPageState extends State<LeaderboardPage> {
+Future<List<Reviewer>> fetchReviewer() async {
+    // TODO: Ganti URL dan jangan lupa tambahkan trailing slash (/) di akhir URL!
+    var url = Uri.parse(
+        'http://127.0.0.1:8000/challenge/ranking/');
+    var response = await http.get(
+        url,
+        headers: {"Content-Type": "application/json"},
     );
+
+    // melakukan decode response menjadi bentuk json
+    var data = jsonDecode(utf8.decode(response.bodyBytes));
+
+    // melakukan konversi data json menjadi object Reviewer
+    List<Reviewer> list_reviewer = [];
+    for (var d in data) {
+        if (d != null) {
+            list_reviewer.add(Reviewer.fromJson(d));
+        }
+    }
+    return list_reviewer;
+}
+
+@override
+Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          title: const Text('Reviewer Leaderboard'),
+          backgroundColor: Colors.pink,
+          foregroundColor: Colors.white,
+        ),
+        drawer: const LeftDrawer(),
+        body: FutureBuilder(
+            future: fetchReviewer(),
+            builder: (context, AsyncSnapshot snapshot) {
+                if (snapshot.data == null) {
+                    return const Center(child: CircularProgressIndicator());
+                } else {
+                    if (!snapshot.hasData) {
+                    return const Column(
+                        children: [
+                        Text(
+                            "Tidak ada data reviewer.",
+                            style:
+                                TextStyle(color: Color(0xff59A5D8), fontSize: 20),
+                        ),
+                        SizedBox(height: 8),
+                        ],
+                    );
+                } else {
+                    return ListView.builder(
+                        itemCount: snapshot.data!.length,
+                        itemBuilder: (_, index) => Container(
+                                margin: const EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 12),
+                                padding: const EdgeInsets.all(20.0),
+                                child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                    Text(
+                                      "${snapshot.data![index].fields.user}",
+                                      style: const TextStyle(
+                                        fontSize: 18.0,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 10),
+                                    Text("${snapshot.data![index].fields.isguru}"),
+                                    const SizedBox(height: 10),
+                                    Text("${snapshot.data![index].fields.banyakReview}"),
+                                    const SizedBox(height: 10),
+                                    Text("${snapshot.data![index].fields.banyakBintang}")
+                                ],
+                                ),
+                            ));
+                    }
+                }
+            }));
   }
 }
