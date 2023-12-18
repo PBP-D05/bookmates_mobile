@@ -19,8 +19,8 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
   Widget build(BuildContext context) {
     final request = context.watch<CookieRequest>();
     Future<List<Reviewer>> data = request
-        .get('http://127.0.0.1:8000/challenge/ranking/')
-        .then((value) {
+    .get('http://127.0.0.1:8000/challenge/ranking/')
+    .then((value) {
       if (value == null) {
         return [];
       }
@@ -38,60 +38,96 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
     });
 
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Reviewer Leaderboard'),
-          backgroundColor: Colors.pink,
-          foregroundColor: Colors.white,
-        ),
-        drawer: const LeftDrawer(),
-        body: FutureBuilder(
-            future: data,
-            builder: (context, AsyncSnapshot snapshot) {
-              if (snapshot.data == null) {
-                return const Center(child: CircularProgressIndicator());
-              } else {
-                if (!snapshot.hasData) {
-                  return const Column(
+      appBar: AppBar(
+        title: const Text('Reviewer Leaderboard'),
+        backgroundColor: Colors.pink,
+        foregroundColor: Colors.white,
+      ),
+      drawer: const LeftDrawer(),
+      body: FutureBuilder(
+        future: data,
+        builder: (context, AsyncSnapshot snapshot) {
+          if (snapshot.data == null) {
+            return const Center(child: CircularProgressIndicator());
+          } else {
+            if (!snapshot.hasData) {
+              return const Column(
+                children: [
+                  Text(
+                    "Tidak ada data reviewer.",
+                    style:
+                      TextStyle(color: Color(0xff59A5D8), fontSize: 20),
+                  ),
+                  SizedBox(height: 8),
+                ],
+              );
+            } else {
+
+              // Sort listview based on the total review
+              List<Reviewer> sortedList = List.from(snapshot.data)
+                ..sort((a, b) => b.fields.banyakReview.compareTo(a.fields.banyakReview));
+
+              return ListView.builder(
+                itemCount: sortedList.length,
+                itemBuilder: (_, index) => Container(
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 16, vertical: 12),
+                  padding: const EdgeInsets.all(20.0),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12.0),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.3),
+                        spreadRadius: 2,
+                        blurRadius: 5,
+                        offset: Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                        "Tidak ada data reviewer.",
-                        style:
-                            TextStyle(color: Color(0xff59A5D8), fontSize: 20),
+                        "Username: ${sortedList[index].fields.user}",
+                        style: const TextStyle(
+                          fontSize: 17.0,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                      SizedBox(height: 8),
+                      const SizedBox(width: 100),
+                      Text(
+                        "Is a Teacher: ${sortedList[index].fields.isGuru}",
+                        style: const TextStyle(
+                          fontSize: 17.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(width: 100),
+                      Text(
+                        "Total Review: ${sortedList[index].fields.banyakReview}",
+                        style: const TextStyle(
+                          fontSize: 17.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(width: 100),
+                      Text(
+                        "Total Stars: ${sortedList[index].fields.banyakBintang}",
+                        style: const TextStyle(
+                          fontSize: 17.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      )
                     ],
-                  );
-                } else {
-                  return ListView.builder(
-                      itemCount: snapshot.data!.length,
-                      itemBuilder: (_, index) => Container(
-                            margin: const EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 12),
-                            padding: const EdgeInsets.all(20.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "${snapshot.data![index].fields.user}",
-                                  style: const TextStyle(
-                                    fontSize: 18.0,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                const SizedBox(height: 10),
-                                Text("${snapshot.data![index].fields.isGuru}"),
-                                const SizedBox(height: 10),
-                                Text(
-                                    "${snapshot.data![index].fields.banyakReview}"),
-                                const SizedBox(height: 10),
-                                Text(
-                                    "${snapshot.data![index].fields.banyakBintang}")
-                              ],
-                            ),
-                          ));
-                }
-              }
-            }));
+                  ),
+                )
+              );
+            }
+          }
+        }
+      )
+    );
   }
 }
