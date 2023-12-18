@@ -161,7 +161,9 @@ class _DashboardPageState extends State<DashboardPage> {
             return SingleChildScrollView(
               child: Column(
                 children: <Widget>[
-                  SizedBox(height: 20,),
+                  SizedBox(
+                    height: 20,
+                  ),
                   Row(
                     children: [
                       SizedBox(
@@ -169,7 +171,10 @@ class _DashboardPageState extends State<DashboardPage> {
                         height: 20,
                       ),
                       Icon(Icons.person),
-                      SizedBox(width: 10, height: 20,),
+                      SizedBox(
+                        width: 10,
+                        height: 20,
+                      ),
                       Text(
                         userProvider.loggedInUserName.isNotEmpty
                             ? 'Hello ${userProvider.loggedInUserName}!'
@@ -292,69 +297,75 @@ class BookCard extends StatelessWidget {
       ),
       child: Padding(
         padding: EdgeInsets.all(10),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Left side with the image
-            Container(
-              width: 150, // Adjust image width as needed
-              height: 175, // Adjust image height as needed
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                image: DecorationImage(
-                  image: NetworkImage(
-                    book.fields.imageUrl,
+        child: InkWell(
+          onTap: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => RatingPage(book)));
+          },
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Left side with the image
+              Container(
+                width: 150, // Adjust image width as needed
+                height: 175, // Adjust image height as needed
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  image: DecorationImage(
+                    image: NetworkImage(
+                      book.fields.imageUrl,
+                    ),
+                    fit: BoxFit.cover,
                   ),
-                  fit: BoxFit.cover,
                 ),
               ),
-            ),
-            SizedBox(width: 10), // Add some space between the image and text
-            // Right side with information
-            Expanded(
-              flex: 3,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    book.fields.judul,
-                    style: TextStyle(
-                      fontFamily: 'Kavoon',
-                      fontSize: 20,
-                      color: Color(0xFF45425A),
-                    ),
-                  ),
-                  SizedBox(height: 5),
-                  Text(
-                    'Author: ${book.fields.author}',
-                    style: TextStyle(
-                      fontFamily: 'Indie Flower',
-                      fontSize: 16,
-                      color: Color(0xFF4CAF50),
-                    ),
-                  ),
-                  Text(
-                    'Age: ${book.fields.minAge} - ${book.fields.maxAge} years',
-                    style: TextStyle(
-                      fontFamily: 'Indie Flower',
-                      fontSize: 16,
-                      color: Color(0xFF4CAF50),
-                    ),
-                  ),
-                  SizedBox(height: 5),
-                  Row(
-                    children: [
-                      Text(
-                        'Rating: ${book.fields.rating}',
-                        style: TextStyle(fontSize: 14),
+              SizedBox(width: 10), // Add some space between the image and text
+              // Right side with information
+              Expanded(
+                flex: 3,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      book.fields.judul,
+                      style: TextStyle(
+                        fontFamily: 'Kavoon',
+                        fontSize: 20,
+                        color: Color(0xFF45425A),
                       ),
-                      Icon(Icons.star, size: 14),
-                    ],
-                  ),
-                ],
+                    ),
+                    SizedBox(height: 5),
+                    Text(
+                      'Author: ${book.fields.author}',
+                      style: TextStyle(
+                        fontFamily: 'Indie Flower',
+                        fontSize: 16,
+                        color: Color(0xFF4CAF50),
+                      ),
+                    ),
+                    Text(
+                      'Age: ${book.fields.minAge} - ${book.fields.maxAge} years',
+                      style: TextStyle(
+                        fontFamily: 'Indie Flower',
+                        fontSize: 16,
+                        color: Color(0xFF4CAF50),
+                      ),
+                    ),
+                    SizedBox(height: 5),
+                    Row(
+                      children: [
+                        Text(
+                          'Rating: ${book.fields.rating}',
+                          style: TextStyle(fontSize: 14),
+                        ),
+                        Icon(Icons.star, size: 14),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
