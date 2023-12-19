@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:bookmates_mobile/Ratings/widget/appbar.dart';
-import 'package:bookmates_mobile/models/pengguna.dart';
 import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
@@ -39,6 +38,14 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _passwordConfirmationController =
       TextEditingController();
   bool _isTeacher = false;
+
+  bool isPasswordStrong(String password) {
+    return password.length >= 8 &&
+        password.contains(RegExp(r'[A-Z]')) &&
+        password.contains(RegExp(r'[a-z]')) &&
+        password.contains(RegExp(r'[0-9]')) &&
+        password.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -126,6 +133,14 @@ class _RegisterPageState extends State<RegisterPage> {
                   return;
                 }
 
+                if (!isPasswordStrong(password)) {
+                  ScaffoldMessenger.of(context)
+                    ..hideCurrentSnackBar()
+                    ..showSnackBar(const SnackBar(
+                      content: Text("Password must be strong and include at least 8 characters, one uppercase letter, one lowercase letter, one digit, and one special character.")));
+                   return;
+                }
+
                 // print("DEBUG: $username $password");
 
                 // Sending the registration request
@@ -172,17 +187,6 @@ class _RegisterPageState extends State<RegisterPage> {
               },
               child: const Text('Register'),
             ),
-            const SizedBox(height: 12.0),
-            ElevatedButton(
-              onPressed: () {
-                // Navigate to Login
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => LoginPage()),
-                );
-              },
-              child: const Text('Login'),
-            )
           ],
         ),
       ),
