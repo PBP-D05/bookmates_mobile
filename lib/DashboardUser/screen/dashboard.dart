@@ -87,6 +87,7 @@ class _DashboardPageState extends State<DashboardPage> {
       throw Exception('Failed to load data');
     }
   }
+  
 
   void _showEditNameDialog(BuildContext context, CookieRequest request) {
     TextEditingController _nameController = TextEditingController();
