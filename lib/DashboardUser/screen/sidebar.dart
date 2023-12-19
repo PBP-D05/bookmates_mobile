@@ -32,15 +32,20 @@ class LeftDrawer extends StatelessWidget {
                   ),
                 ),
                 Padding(padding: EdgeInsets.all(10)),
-                // Text("Catat seluruh keperluan belanjamu di sini!",
-                //     textAlign: TextAlign.center,
-                //     style: TextStyle(
-                //       fontSize: 15,
-                //       color: Colors.white,
-                //       fontWeight: FontWeight.normal,
-                //     )),
+                
               ],
             ),
+          ),
+          ListTile(
+            leading: Icon(Icons.dashboard),
+            title: Text('Dashboard'),
+            onTap: () {
+                
+                Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => DashboardPage()),
+                );
+            },
           ),
           ListTile(
             leading: const Icon(Icons.search),
@@ -70,7 +75,6 @@ class LeftDrawer extends StatelessWidget {
             leading: Icon(Icons.power_settings_new_outlined),
             title: Text('Logout'),
             onTap: () {
-                // Route menu ke halaman produk
                 Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const HomeScreen()),

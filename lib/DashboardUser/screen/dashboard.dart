@@ -87,7 +87,7 @@ class _DashboardPageState extends State<DashboardPage> {
       throw Exception('Failed to load data');
     }
   }
-  
+
 
   void _showEditNameDialog(BuildContext context, CookieRequest request) {
     TextEditingController _nameController = TextEditingController();
@@ -128,12 +128,6 @@ class _DashboardPageState extends State<DashboardPage> {
       ),
     );
   }
-
-  // final List<ShopItem> items = [
-  //   ShopItem("Lihat Produk", Icons.checklist),
-  //   ShopItem("Tambah Produk", Icons.add_shopping_cart),
-  //   ShopItem("Logout", Icons.logout),
-  // ];
 
   @override
   Widget build(BuildContext context) {
@@ -306,10 +300,9 @@ class BookCard extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Left side with the image
               Container(
-                width: 150, // Adjust image width as needed
-                height: 175, // Adjust image height as needed
+                width: 150, 
+                height: 175, 
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8),
                   image: DecorationImage(
@@ -320,8 +313,7 @@ class BookCard extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(width: 10), // Add some space between the image and text
-              // Right side with information
+              SizedBox(width: 10), 
               Expanded(
                 flex: 3,
                 child: Column(
