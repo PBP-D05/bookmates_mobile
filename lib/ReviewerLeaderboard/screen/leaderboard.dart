@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:bookmates_mobile/models/reviewer.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
+import 'package:bookmates_mobile/Ratings/model/reviews.dart';
 
 class LeaderboardPage extends StatefulWidget {
   const LeaderboardPage({Key? key}) : super(key: key);
@@ -90,6 +91,14 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
+                        "${index + 1}.",
+                        style: const TextStyle(
+                          fontSize: 25.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(width: 150),
+                      Text(
                         "Username: ${sortedList[index].fields.user}",
                         style: const TextStyle(
                           fontSize: 17.0,
@@ -98,7 +107,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                       ),
                       const SizedBox(width: 100),
                       Text(
-                        "Is a Teacher: ${sortedList[index].fields.isGuru}",
+                        "Is a Writer: ${sortedList[index].fields.isGuru}",
                         style: const TextStyle(
                           fontSize: 17.0,
                           fontWeight: FontWeight.bold,
