@@ -1,9 +1,10 @@
 import 'dart:convert';
-import 'package:bookmates_mobile/models/pengguna.dart';
+import 'package:bookmates_mobile/Ratings/widget/appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'login.dart';
+import 'package:bookmates_mobile/DashboardUser/screen/dashboard.dart';
 
 void main() {
   runApp(const RegisterApp());
@@ -37,20 +38,22 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _passwordConfirmationController =
       TextEditingController();
   bool _isTeacher = false;
-  int _userCounter = 0;
+
+  bool isPasswordStrong(String password) {
+    return password.length >= 8 &&
+        password.contains(RegExp(r'[A-Z]')) &&
+        password.contains(RegExp(r'[a-z]')) &&
+        password.contains(RegExp(r'[0-9]')) &&
+        password.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'));
+  }
 
   @override
   Widget build(BuildContext context) {
     final request = context.watch<CookieRequest>();
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Register',
-          style: TextStyle(color: Colors.white),
-        ),
-        backgroundColor: Colors.pink.shade200,
-        foregroundColor: Colors.white,
-      ),
+      appBar: myAppBar("Register"),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -60,9 +63,9 @@ class _RegisterPageState extends State<RegisterPage> {
               controller: _usernameController,
               decoration: const InputDecoration(
                 labelText: 'Username',
-                labelStyle: TextStyle(color: Colors.deepPurple),
+                labelStyle: TextStyle(color: Colors.pink),
                 focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.deepPurple),
+                  borderSide: BorderSide(color: Colors.pink),
                 ),
               ),
             ),
@@ -71,9 +74,9 @@ class _RegisterPageState extends State<RegisterPage> {
               controller: _passwordController,
               decoration: const InputDecoration(
                 labelText: 'Password',
-                labelStyle: TextStyle(color: Colors.deepPurple),
+                labelStyle: TextStyle(color: Colors.pink),
                 focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.deepPurple),
+                  borderSide: BorderSide(color: Colors.pink),
                 ),
               ),
               obscureText: true,
@@ -83,9 +86,9 @@ class _RegisterPageState extends State<RegisterPage> {
               controller: _passwordConfirmationController,
               decoration: const InputDecoration(
                 labelText: 'Password Verification',
-                labelStyle: TextStyle(color: Colors.deepPurple),
+                labelStyle: TextStyle(color: Colors.pink),
                 focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.deepPurple),
+                  borderSide: BorderSide(color: Colors.pink),
                 ),
               ),
               obscureText: true,
@@ -101,16 +104,25 @@ class _RegisterPageState extends State<RegisterPage> {
                     });
                   },
                 ),
-                Text('I am a teacher'),
+                Text('I am a writer'),
               ],
             ),
             const SizedBox(height: 24.0),
-              ElevatedButton(
+            ElevatedButton(
               onPressed: () async {
                 String username = _usernameController.text;
                 String password = _passwordController.text;
                 String passwordConfirmation =
                     _passwordConfirmationController.text;
+
+                if (username.isEmpty) {
+                  ScaffoldMessenger.of(context)
+                    ..hideCurrentSnackBar()
+                    ..showSnackBar(const SnackBar(
+                      content: Text("Please enter a username."),
+                    ));
+                  return;
+                }
 
                 if (password != passwordConfirmation) {
                   ScaffoldMessenger.of(context)
@@ -121,10 +133,15 @@ class _RegisterPageState extends State<RegisterPage> {
                   return;
                 }
 
-                // Increment the user counter for a unique user ID
-                _userCounter++;
+                if (!isPasswordStrong(password)) {
+                  ScaffoldMessenger.of(context)
+                    ..hideCurrentSnackBar()
+                    ..showSnackBar(const SnackBar(
+                      content: Text("Password must be strong and include at least 8 characters, one uppercase letter, one lowercase letter, one digit, and one special character.")));
+                   return;
+                }
 
-                print("DEBUG: $username $password");
+                // print("DEBUG: $username $password");
 
                 // Sending the registration request
                 final response = await request.post(
@@ -132,11 +149,12 @@ class _RegisterPageState extends State<RegisterPage> {
                   {
                     'username': username,
                     'password': password,
-                    'is_teacher' : _isTeacher? 'true' : 'false'
-                    // You might want to include additional fields here
+                    'is_teacher': _isTeacher ? 'true' : 'false'
                   },
                 );
 
+                
+                userProvider.setTeacherStatus(response['is_teacher']);
                 if (response['status']) {
                   String message = response['message'];
 
@@ -169,18 +187,6 @@ class _RegisterPageState extends State<RegisterPage> {
               },
               child: const Text('Register'),
             ),
-
-            const SizedBox(height: 12.0),
-            ElevatedButton(
-              onPressed: () {
-                // Navigate to Login
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => LoginPage()),
-                );
-              },
-              child: const Text('Login'),
-            )
           ],
         ),
       ),

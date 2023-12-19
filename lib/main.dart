@@ -1,3 +1,4 @@
+import 'package:bookmates_mobile/DashboardUser/screen/dashboard.dart';
 import 'package:bookmates_mobile/LoginRegister/screens/home.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -6,7 +7,13 @@ import 'package:pbp_django_auth/pbp_django_auth.dart';
 
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => UserProvider(),
+      child: const MyApp (),
+    ),
+    );
+  
 }
 
 class MyApp extends StatelessWidget {
@@ -25,7 +32,7 @@ class MyApp extends StatelessWidget {
                     colorScheme: ColorScheme.fromSeed(seedColor: Colors.pink.shade200),
                     useMaterial3: true,
                 ),
-                home: const HomeScreen()),
+                home: HomeScreen()),
             );
     }
 }

@@ -1,32 +1,32 @@
 // To parse this JSON data, do
 //
-//     final pengguna = penggunaFromJson(jsonString);
+//     final reviewer = reviewerFromJson(jsonString);
 
 import 'dart:convert';
 
-List<Pengguna> penggunaFromJson(String str) => List<Pengguna>.from(json.decode(str).map((x) => Pengguna.fromJson(x)));
+List<Reviewer> reviewerFromJson(String str) => List<Reviewer>.from(json.decode(str).map((x) => Reviewer.fromJson(x)));
 
-String penggunaToJson(List<Pengguna> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+String reviewerToJson(List<Reviewer> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
-class Pengguna {
-    String model;
+class Reviewer {
+    Model model;
     int pk;
     Fields fields;
 
-    Pengguna({
+    Reviewer({
         required this.model,
         required this.pk,
         required this.fields,
     });
 
-    factory Pengguna.fromJson(Map<String, dynamic> json) => Pengguna(
-        model: json["model"],
+    factory Reviewer.fromJson(Map<String, dynamic> json) => Reviewer(
+        model: modelValues.map[json["model"]]!,
         pk: json["pk"],
         fields: Fields.fromJson(json["fields"]),
     );
 
     Map<String, dynamic> toJson() => {
-        "model": model,
+        "model": modelValues.reverse[model],
         "pk": pk,
         "fields": fields.toJson(),
     };
@@ -62,4 +62,24 @@ class Fields {
         "banyak_review": banyakReview,
         "banyak_bintang": banyakBintang,
     };
+}
+
+enum Model {
+    MENGELOLA_BUKU_PENGGUNA
+}
+
+final modelValues = EnumValues({
+    "MengelolaBuku.pengguna": Model.MENGELOLA_BUKU_PENGGUNA
+});
+
+class EnumValues<T> {
+    Map<String, T> map;
+    late Map<T, String> reverseMap;
+
+    EnumValues(this.map);
+
+    Map<T, String> get reverse {
+        reverseMap = map.map((k, v) => MapEntry(v, k));
+        return reverseMap;
+    }
 }
