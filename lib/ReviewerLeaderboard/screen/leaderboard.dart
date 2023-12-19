@@ -1,192 +1,133 @@
-// import 'package:flutter/material.dart';
-
-// class LeaderboardPage extends StatelessWidget {
-//   const LeaderboardPage({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       theme: ThemeData(
-//         primarySwatch: Colors.pink,
-//       ),
-//       home: Scaffold(
-//         appBar: AppBar(title: const Text('Leaderboard')),
-//         body: Row(
-//           mainAxisSize: MainAxisSize.max,
-//           mainAxisAlignment: MainAxisAlignment.center,
-//           children: [
-//             const Leaderboard()
-//           ]
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-// class Leaderboard extends StatelessWidget {
-//   const Leaderboard({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return DataTable(
-//       columnSpacing: 100.0,
-//       columns: const <DataColumn>[
-//         DataColumn(
-//           label: Expanded(
-//             child: Text(
-//               'Name',
-//               style: TextStyle(fontStyle: FontStyle.italic),
-//             ),
-//           ),
-//         ),
-//         DataColumn(
-//           label: Expanded(
-//             child: Text(
-//               'Teacher Status',
-//               style: TextStyle(fontStyle: FontStyle.italic),
-//             ),
-//           ),
-//         ),
-//         DataColumn(
-//           label: Expanded(
-//             child: Text(
-//               'Total Review',
-//               style: TextStyle(fontStyle: FontStyle.italic),
-//             ),
-//           ),
-//         ),
-//         DataColumn(
-//           label: Expanded(
-//             child: Text(
-//               'Total Stars',
-//               style: TextStyle(fontStyle: FontStyle.italic),
-//             ),
-//           ),
-//         ),
-//       ],
-//       rows: const <DataRow>[
-//         DataRow(
-//           cells: <DataCell>[
-//             DataCell(Text('a')),
-//             DataCell(Text('a')),
-//             DataCell(Text('a')),
-//             DataCell(Text('a')),
-//           ],
-//         ),
-//         DataRow(
-//           cells: <DataCell>[
-//             DataCell(Text('b')),
-//             DataCell(Text('b')),
-//             DataCell(Text('b')),
-//             DataCell(Text('a')),
-//           ],
-//         ),
-//         DataRow(
-//           cells: <DataCell>[
-//             DataCell(Text('c')),
-//             DataCell(Text('c')),
-//             DataCell(Text('c')),
-//             DataCell(Text('a')),
-//           ],
-//         ),
-//       ],
-//     );
-//   }
-// }
-
 import 'package:flutter/material.dart';
 import 'package:bookmates_mobile/DashboardUser/screen/sidebar.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:bookmates_mobile/models/reviewer.dart';
+import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'package:provider/provider.dart';
 
-class LeaderboardPage extends StatelessWidget {
+class LeaderboardPage extends StatefulWidget {
   const LeaderboardPage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
-        primarySwatch: Colors.pink,
-      ),
-      home: Scaffold(
-        appBar: AppBar(title: const Text('Leaderboard')),
-        body: Center(
-          child: Container(
-            width: MediaQuery.of(context).size.width * 0.9,
-            child: SingleChildScrollView(
-              child: Leaderboard(),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
+  _LeaderboardPageState createState() => _LeaderboardPageState();
 }
 
-class Leaderboard extends StatelessWidget {
-  const Leaderboard({Key? key}) : super(key: key);
+class _LeaderboardPageState extends State<LeaderboardPage> {
 
   @override
   Widget build(BuildContext context) {
-    return DataTable(
-      columnSpacing: 0.0,
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.black), // Add border to the table
+    final request = context.watch<CookieRequest>();
+    Future<List<Reviewer>> data = request
+    .get('http://127.0.0.1:8000/challenge/ranking/')
+    .then((value) {
+      if (value == null) {
+        return [];
+      }
+      // print(value);
+      var jsonValue = jsonDecode(value);
+      // print("JS VAL $jsonValue");
+      // print("JS VAL ${jsonValue['text']}");
+      List<Reviewer> listItem = [];
+      for (var data in jsonValue) {
+        if (data != null) {
+          listItem.add(Reviewer.fromJson(data));
+        }
+      }
+      return listItem;
+    });
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Reviewer Leaderboard'),
+        backgroundColor: Colors.pink,
+        foregroundColor: Colors.white,
       ),
-      columns: const <DataColumn>[
-        DataColumn(
-          label: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Center(
-              child: Text(
-                'Name',
-                style: TextStyle(fontStyle: FontStyle.italic),
-              ),
-            ),
-          ),
-        ),
-        DataColumn(
-          label: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Center(
-              child: Text(
-                'Teacher Status',
-                style: TextStyle(fontStyle: FontStyle.italic),
-              ),
-            ),
-          ),
-        ),
-        DataColumn(
-          label: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Center(
-              child: Text(
-                'Total Review',
-                style: TextStyle(fontStyle: FontStyle.italic),
-              ),
-            ),
-          ),
-        ),
-        DataColumn(
-          label: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Center(
-              child: Text(
-                'Total Stars',
-                style: TextStyle(fontStyle: FontStyle.italic),
-              ),
-            ),
-          ),
-        ),
-      ],
-      rows: const <DataRow>[
-        DataRow(
-          cells: <DataCell>[
-            DataCell(Center(child: Text('a'))),
-            DataCell(Center(child: Text('a'))),
-            DataCell(Center(child: Text('a'))),
-            DataCell(Center(child: Text('a'))),
-          ],
-        ),
-      ],
+      drawer: const LeftDrawer(),
+      body: FutureBuilder(
+        future: data,
+        builder: (context, AsyncSnapshot snapshot) {
+          if (snapshot.data == null) {
+            return const Center(child: CircularProgressIndicator());
+          } else {
+            if (!snapshot.hasData) {
+              return const Column(
+                children: [
+                  Text(
+                    "Tidak ada data reviewer.",
+                    style:
+                      TextStyle(color: Color(0xff59A5D8), fontSize: 20),
+                  ),
+                  SizedBox(height: 8),
+                ],
+              );
+            } else {
+
+              // Sort listview based on the total review
+              List<Reviewer> sortedList = List.from(snapshot.data)
+                ..sort((a, b) => b.fields.banyakReview.compareTo(a.fields.banyakReview));
+
+              return ListView.builder(
+                itemCount: sortedList.length,
+                itemBuilder: (_, index) => Container(
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 16, vertical: 12),
+                  padding: const EdgeInsets.all(20.0),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12.0),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.3),
+                        spreadRadius: 2,
+                        blurRadius: 5,
+                        offset: Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Username: ${sortedList[index].fields.user}",
+                        style: const TextStyle(
+                          fontSize: 17.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(width: 100),
+                      Text(
+                        "Is a Teacher: ${sortedList[index].fields.isGuru}",
+                        style: const TextStyle(
+                          fontSize: 17.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(width: 100),
+                      Text(
+                        "Total Review: ${sortedList[index].fields.banyakReview}",
+                        style: const TextStyle(
+                          fontSize: 17.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(width: 100),
+                      Text(
+                        "Total Stars: ${sortedList[index].fields.banyakBintang}",
+                        style: const TextStyle(
+                          fontSize: 17.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      )
+                    ],
+                  ),
+                )
+              );
+            }
+          }
+        }
+      )
     );
   }
 }
