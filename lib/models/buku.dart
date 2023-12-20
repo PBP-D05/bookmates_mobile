@@ -47,7 +47,7 @@ class Fields {
     int maxAge;
     String imageUrl;
     String desc;
-    int user;
+    int? user;
 
     Fields({
         required this.judul,

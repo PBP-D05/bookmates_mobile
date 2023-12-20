@@ -24,7 +24,7 @@ class _RatingBoxWidgetState extends State<RatingBoxWidget> {
   Widget build(BuildContext context) {
     final request = context.watch<CookieRequest>();
     Future<List<Reviews>> data = request
-        .get("http://127.0.0.1:8000/challenge/reviews/${widget.buku.pk}")
+        .get("https://booksmate-d05-tk.pbp.cs.ui.ac.id/challenge/reviews/${widget.buku.pk}")
         .then((value) {
       if (value == null) {
         return [];
@@ -109,7 +109,7 @@ class _TextFieldReviewBoxState extends State<TextFieldReviewBox> {
     final request = context.watch<CookieRequest>();
 
     Future<String> username = request
-        .get("http://127.0.0.1:8000/challenge/get_current_username/")
+        .get("https://booksmate-d05-tk.pbp.cs.ui.ac.id/challenge/get_current_username/")
         .then((value) => jsonDecode(value)['username']);
 
     return Padding(
@@ -189,7 +189,7 @@ class _TextFieldReviewBoxState extends State<TextFieldReviewBox> {
             ElevatedButton(
                 onPressed: () async {
                   var response = await request.postJson(
-                      "http://127.0.0.1:8000/challenge/post_reviews",
+                      "https://booksmate-d05-tk.pbp.cs.ui.ac.id/challenge/post_reviews",
                       jsonEncode(<String, String>{
                         "pk": widget.buku.pk.toString(),
                         "text": contentController.text,
@@ -257,7 +257,7 @@ class SingleReviewBox extends StatelessWidget {
   Widget build(BuildContext context) {
     final request = context.watch<CookieRequest>();
     Future<String> username = request
-        .get("http://127.0.0.1:8000/challenge/get_username/$pk")
+        .get("https://booksmate-d05-tk.pbp.cs.ui.ac.id/challenge/get_username/$pk")
         .then((value) => jsonDecode(value)['username']);
 
     return Padding(

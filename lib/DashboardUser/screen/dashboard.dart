@@ -51,18 +51,16 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   Future<Pengguna> fetch() async {
-    var url = Uri.parse('http://127.0.0.1:8000/auth/login/');
+    var url = Uri.parse('https://booksmate-d05-tk.pbp.cs.ui.ac.id/auth/login/');
     var response =
         await http.get(url, headers: {"Content-Type": "application/json"});
     var data = jsonDecode(utf8.decode(response.bodyBytes));
-    Pengguna user = Pengguna.fromJson(data);
-    String username = data.user.fields.toString();
     return data;
   }
 
   Future<List<Buku>> fetchData() async {
     try {
-      var url = Uri.parse('http://127.0.0.1:8000/editbuku/get-books-json/');
+      var url = Uri.parse('https://booksmate-d05-tk.pbp.cs.ui.ac.id/editbuku/get-books-json/');
       var response = await http.get(
         url,
         headers: {"Content-Type": "application/json"},
@@ -88,6 +86,7 @@ class _DashboardPageState extends State<DashboardPage> {
     }
   }
 
+
   void _showEditNameDialog(BuildContext context, CookieRequest request) {
     TextEditingController _nameController = TextEditingController();
     showDialog(
@@ -106,7 +105,7 @@ class _DashboardPageState extends State<DashboardPage> {
                 try {
                   // print(request.jsonData.toString());
                   final response = await request.post(
-                    'http://127.0.0.1:8000/update_user_name/',
+                    'https://booksmate-d05-tk.pbp.cs.ui.ac.id/update_user_name/',
                     {'name': newName, 'id': request.jsonData['id'].toString()},
                   );
                   if (context.mounted && response['status']) {
@@ -127,12 +126,6 @@ class _DashboardPageState extends State<DashboardPage> {
       ),
     );
   }
-
-  // final List<ShopItem> items = [
-  //   ShopItem("Lihat Produk", Icons.checklist),
-  //   ShopItem("Tambah Produk", Icons.add_shopping_cart),
-  //   ShopItem("Logout", Icons.logout),
-  // ];
 
   @override
   Widget build(BuildContext context) {
@@ -305,10 +298,9 @@ class BookCard extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Left side with the image
               Container(
-                width: 150, // Adjust image width as needed
-                height: 175, // Adjust image height as needed
+                width: 150, 
+                height: 175, 
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8),
                   image: DecorationImage(
@@ -319,8 +311,7 @@ class BookCard extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(width: 10), // Add some space between the image and text
-              // Right side with information
+              SizedBox(width: 10), 
               Expanded(
                 flex: 3,
                 child: Column(

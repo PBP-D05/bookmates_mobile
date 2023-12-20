@@ -25,7 +25,7 @@ Widget build(BuildContext context) {
     final request = context.watch<CookieRequest>();
 
     Future<List<Buku>> response = request
-        .postJson("http://127.0.0.1:8000/editbuku/show-book-flutter/",
+        .postJson("https://booksmate-d05-tk.pbp.cs.ui.ac.id/editbuku/show-book-flutter/",
             jsonEncode(<String, String>{"Content-Type": "application/json"}))
         .then((value) {
       if (value == null) {
@@ -156,7 +156,7 @@ Widget build(BuildContext context) {
                                                 ),
                                                 onPressed: () async {
                                                         final response = await request.postJson(
-                                                        "http://127.0.0.1:8000/editbuku/remove-book-flutter/",
+                                                        "https://booksmate-d05-tk.pbp.cs.ui.ac.id/editbuku/remove-book-flutter/",
                                                         jsonEncode(<String, String>{
                                                             'pk': snapshot.data![index].pk.toString(),
                     

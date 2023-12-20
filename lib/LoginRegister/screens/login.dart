@@ -1,16 +1,8 @@
-import 'package:bookmates_mobile/LoginRegister/screens/register.dart';
-import 'package:bookmates_mobile/Ratings/model/reviews.dart';
-import 'package:bookmates_mobile/Ratings/screen/ratingPage.dart';
-// import 'package:bookmates_mobile/main.dart';
 import 'package:flutter/material.dart';
-//import 'package:inventory_mobile/screens/register.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:bookmates_mobile/DashboardUser/screen/dashboard.dart';
-import 'package:bookmates_mobile/MengelolaBuku/screen/add_book.dart';
-// import 'package:bookmates_mobile/SearchKatalog/search_page.dart';
 import 'package:bookmates_mobile/Ratings/widget/appbar.dart';
-import 'package:bookmates_mobile/models/pengguna.dart';
 
 void main() {
   runApp(const LoginApp());
@@ -47,14 +39,7 @@ class _LoginPageState extends State<LoginPage> {
     final request = context.watch<CookieRequest>();
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Login',
-          style: TextStyle(color: Colors.white),
-        ),
-        backgroundColor: Colors.pink.shade200,
-        foregroundColor: Colors.white,
-      ),
+      appBar: myAppBar("Login"),
       body: Container(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -64,6 +49,10 @@ class _LoginPageState extends State<LoginPage> {
               controller: _usernameController,
               decoration: const InputDecoration(
                 labelText: 'Username',
+                labelStyle: TextStyle(color: Colors.pink),
+                focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.pink),
+                ),
               ),
             ),
             const SizedBox(height: 12.0),
@@ -71,6 +60,10 @@ class _LoginPageState extends State<LoginPage> {
               controller: _passwordController,
               decoration: const InputDecoration(
                 labelText: 'Password',
+                labelStyle: TextStyle(color: Colors.pink),
+                focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.pink),
+                ),
               ),
               obscureText: true,
             ),
@@ -85,7 +78,7 @@ class _LoginPageState extends State<LoginPage> {
                 // Untuk menyambungkan Android emulator dengan Django pada localhost,
                 // gunakan URL http://10.0.2.2/
                 final response =
-                    await request.login("http://127.0.0.1:8000/auth/login/", {
+                    await request.login("https://booksmate-d05-tk.pbp.cs.ui.ac.id/auth/login/", {
                   'username': username,
                   'password': password,
                 });
@@ -104,10 +97,7 @@ class _LoginPageState extends State<LoginPage> {
                     ..hideCurrentSnackBar()
                     ..showSnackBar(SnackBar(
                         content: Text("$message Selamat datang, $uname.")));
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => DashboardPage()),
-                  );
+                  
                 } else {
                   showDialog(
                     context: context,
@@ -128,17 +118,6 @@ class _LoginPageState extends State<LoginPage> {
               },
               child: const Text('Login'),
             ),
-            const SizedBox(height: 12.0),
-            ElevatedButton(
-              onPressed: () {
-                // Navigate to Register Page
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => RegisterPage()),
-                );
-              },
-              child: const Text('Register'),
-            )
           ],
         ),
       ),

@@ -1,4 +1,3 @@
-// File: lib/screens/search_katalog/show_book.dart
 import 'package:flutter/material.dart';
 import 'package:bookmates_mobile/models/buku.dart';
 
@@ -22,7 +21,6 @@ class ShowBook extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Cover buku lebih besar
               Container(
                 width: 250,
                 height: 350,
@@ -42,7 +40,6 @@ class ShowBook extends StatelessWidget {
                 ),
               ),
               SizedBox(width: 30),
-              // Informasi buku disebelah kanan
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -74,13 +71,17 @@ class ShowBook extends StatelessWidget {
                     SizedBox(height: 30),
                     Row(
                       children: [
-                        generateRatingStars(buku.fields.rating.floor()),
+                        Flexible(
+                          child: generateRatingStars(buku.fields.rating.floor()),
+                        ),
                         SizedBox(width: 5),
-                        Text(
-                          '(${buku.fields.numOfRating} Ratings)',
-                          style: TextStyle(
-                            fontSize: 18,
-                            color: Colors.green,
+                        Flexible(
+                          child: Text(
+                            '(${buku.fields.numOfRating} Ratings)',
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.green,
+                            ),
                           ),
                         ),
                       ],
@@ -104,28 +105,25 @@ class ShowBook extends StatelessWidget {
   }
 
   Widget generateRatingStars(int rating) {
-    List<Widget> stars = [];
-
-    // Bintang terisi (fas fa-star)
-    for (int i = 0; i < rating; i++) {
-      stars.add(Icon(
-        Icons.star,
-        color: Colors.yellow,
-        size: 24,
-      ));
-    }
-
-    // Bintang kosong (far fa-star)
-    for (int j = rating; j < 5; j++) {
-      stars.add(Icon(
-        Icons.star_border,
-        color: Colors.yellow,
-        size: 24,
-      ));
-    }
-
-    return Row(
-      children: stars,
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: List.generate(5, (index) {
+          if (index < rating) {
+            return Icon(
+              Icons.star,
+              color: Colors.yellow,
+              size: 24,
+            );
+          } else {
+            return Icon(
+              Icons.star_border,
+              color: Colors.yellow,
+              size: 24,
+            );
+          }
+        }),
+      ),
     );
   }
 }
