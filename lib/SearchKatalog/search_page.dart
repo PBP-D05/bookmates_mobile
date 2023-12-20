@@ -90,28 +90,24 @@ class _SearchPageState extends State<SearchPage> {
               ),
               SizedBox(width: 10),
               Expanded(
-                child: ListView(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          buku.fields.judul,
-                          style: TextStyle(
-                            fontFamily: 'Kavoon',
-                            fontSize: 18,
-                            color: Color(0xFF45425A),
-                          ),
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        buku.fields.judul,
+                        style: TextStyle(
+                          fontFamily: 'Kavoon',
+                          fontSize: 18,
+                          color: Color(0xFF45425A),
                         ),
-                        Text('By ${buku.fields.author}'),
-                        Text('Age ${buku.fields.minAge}-${buku.fields.maxAge}'),
-                        SizedBox(height: 3),
-                        generateRatingStars(buku.fields.rating),
-                      ],
-                    ),
-                  ],
+                      ),
+                      Text('By ${buku.fields.author}'),
+                      Text('Age ${buku.fields.minAge}-${buku.fields.maxAge}'),
+                      SizedBox(height: 3),
+                      generateRatingStars(buku.fields.rating),
+                    ],
+                  ),
                 ),
               ),
             ],

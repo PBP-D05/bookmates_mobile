@@ -9,6 +9,15 @@ class ShowBook extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double coverWidth = MediaQuery.of(context).size.width * 0.4;
+    double maxCoverHeight = MediaQuery.of(context).size.height * 0.8;
+
+    // Batasan lebar buku agar tidak terlalu lebar saat layar diperbesar
+    double maxWidth = MediaQuery.of(context).size.width * 0.5;
+    if (coverWidth > maxWidth) {
+      coverWidth = maxWidth;
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Book Detail'),
@@ -17,13 +26,25 @@ class ShowBook extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         child: Container(
+          width: MediaQuery.of(context).size.width,
           padding: const EdgeInsets.all(16.0),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              Text(
+                buku.fields.judul,
+                style: TextStyle(
+                  fontFamily: 'Kavoon',
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.pink,
+                ),
+              ),
+              SizedBox(height: 10),
               Container(
-                width: 250,
-                height: 350,
+                width: coverWidth,
+                height: coverWidth * 1.5,
+                constraints: BoxConstraints(maxHeight: maxCoverHeight),
                 decoration: BoxDecoration(
                   image: DecorationImage(
                     image: NetworkImage(buku.fields.imageUrl),
@@ -39,62 +60,39 @@ class ShowBook extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(width: 30),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      buku.fields.judul,
-                      style: TextStyle(
-                        fontFamily: 'Kavoon',
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.pink,
-                      ),
+              SizedBox(height: 20),
+              Text(
+                'By ${buku.fields.author}',
+                style: TextStyle(
+                  fontSize: 18,
+                  color: Color.fromARGB(255, 111, 109, 109),
+                ),
+              ),
+              SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  generateRatingStars(buku.fields.rating.floor()),
+                  SizedBox(width: 5),
+                  Text(
+                    '(${buku.fields.numOfRating} Ratings)',
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.green,
                     ),
-                    SizedBox(height: 30),
-                    Text(
-                      'By ${buku.fields.author}',
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Color.fromARGB(255, 111, 109, 109),
-                      ),
-                    ),
-                    Text(
-                      'Recommended Age: ${buku.fields.minAge}-${buku.fields.maxAge}',
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Color.fromARGB(255, 111, 109, 109),
-                      ),
-                    ),
-                    SizedBox(height: 30),
-                    Row(
-                      children: [
-                        Flexible(
-                          child: generateRatingStars(buku.fields.rating.floor()),
-                        ),
-                        SizedBox(width: 5),
-                        Flexible(
-                          child: Text(
-                            '(${buku.fields.numOfRating} Ratings)',
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: Colors.green,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 10),
-                    Text(
-                      cleanedDescription,
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Color.fromARGB(255, 111, 109, 109),
-                      ),
-                    ),
-                  ],
+                  ),
+                ],
+              ),
+              SizedBox(height: 10),
+              Container(
+                width: MediaQuery.of(context).size.width * 0.8,
+                child: Text(
+                  cleanedDescription,
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: Color.fromARGB(255, 111, 109, 109),
+                  ),
+                  textAlign: TextAlign.center,
                 ),
               ),
             ],
