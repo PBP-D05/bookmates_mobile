@@ -166,8 +166,11 @@ class _SearchPageState extends State<SearchPage> {
       ));
     }
 
-    return Row(
-      children: stars,
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal, // Tambahkan Axis.horizontal
+      child: Row(
+        children: stars,
+      ),
     );
   }
 
