@@ -108,7 +108,7 @@ class _BookFormPageState extends State<BookFormPage> {
                                 child: Row (
                                     children: [
                                         SizedBox(
-                                            width: 200.0,
+                                            width: 150.0,
                                             child: TextFormField(
                                                 decoration: InputDecoration(
                                                 hintText: "from",
@@ -137,7 +137,7 @@ class _BookFormPageState extends State<BookFormPage> {
                                             )
                                         ),
                                         SizedBox(
-                                            width: 200.0,
+                                            width:150.0,
                                             child: TextFormField(
                                                 decoration: InputDecoration(
                                                 hintText: "until",
