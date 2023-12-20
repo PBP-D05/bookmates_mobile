@@ -27,14 +27,28 @@ class HomeScreen extends StatelessWidget {
                   children: [
                     Padding(
                       padding: const EdgeInsets.all(20.0),
-                      child: Text(
-                        'Hi There!',
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                        'Hi',
                         style: TextStyle(
                           color: Colors.white,
                           fontFamily: 'Kavoon',
                           fontWeight: FontWeight.bold,
                           fontSize: 50,
                         ),
+                      ),
+                      Text(
+                          'There!',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontFamily: 'Kavoon',
+                            fontWeight: FontWeight.bold,
+                            fontSize: 50,
+                          ),
+                        ),
+                        ],
                       ),
                     ),
                   ],
@@ -60,14 +74,39 @@ class HomeScreen extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
-                        "Let's get started shall we?",
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Center(
+                            child: Text(
+                        "Let's get started",
                         style: TextStyle(
                           color: Color(0xFFFF6B6C),
                           fontFamily: 'Kavoon',
                           fontWeight: FontWeight.bold,
                           fontSize: 40,
                         ),
+                      ),
+                          ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Center( 
+                            child: Text(
+                        "shall we?",
+                        style: TextStyle(
+                          color: Color(0xFFFF6B6C),
+                          fontFamily: 'Kavoon',
+                          fontWeight: FontWeight.bold,
+                          fontSize: 40,
+                        ),
+                      ),
+                          ),
+                          ),
+                        ],
                       ),
                       SizedBox(height: 20),
                       ElevatedButton(
