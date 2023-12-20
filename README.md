@@ -57,4 +57,6 @@ Modul dimana penulis dapat menambahkan dan menghapus buku. Buku yang ditambahkan
 
 [Link GDocs Berita Acara Kami](https://docs.google.com/spreadsheets/d/1zQ68lFicQ0OQE3q7AP53PekBuTdB7l3QsvXFU262EPQ/edit?usp=sharing)
 
+[Link Download Aplikasi](https://install.appcenter.ms/orgs/pbp-d05/apps/book-mates/distribution_groups/public)
+
 [![Build status](https://build.appcenter.ms/v0.1/apps/d564891b-34a2-44c7-97e0-158e0adf0a79/branches/main/badge)](https://appcenter.ms)
