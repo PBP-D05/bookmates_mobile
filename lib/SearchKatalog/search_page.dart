@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:bookmates_mobile/models/buku.dart';
 import 'show_book.dart';
+import 'package:bookmates_mobile/DashboardUser/screen/sidebar.dart'; // Import the file containing LeftDrawer
 
 class SearchPage extends StatefulWidget {
   const SearchPage({Key? key}) : super(key: key);
@@ -54,7 +55,6 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
-
   Widget _buildBookCard(Buku buku, String cleanedDescription) {
     return Card(
       shape: RoundedRectangleBorder(
@@ -92,7 +92,7 @@ class _SearchPageState extends State<SearchPage> {
               Expanded(
                 child: ListView(
                   shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(), // Disable scrolling for the inner ListView
+                  physics: NeverScrollableScrollPhysics(),
                   children: [
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -175,10 +175,11 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Search Catalog'),
+        title: const Text('Search Katalog'),
         backgroundColor: Colors.pink,
         foregroundColor: Colors.white,
       ),
+      drawer: LeftDrawer(), // Add the LeftDrawer as a drawer
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(10.0),
@@ -197,46 +198,51 @@ class _SearchPageState extends State<SearchPage> {
                   ),
                 ),
               ),
+              Center(
+                child: Column(
+                  children: [
+                    Text(
+                      'Select Category:',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.pink,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.black),
+                        borderRadius: BorderRadius.circular(20),
+                        color: Colors.pink,
+                      ),
+                      child: DropdownButton<String>(
+                        value: _selectedCategory,
+                        onChanged: (String? value) {
+                          setState(() {
+                            _selectedCategory = value!;
+                          });
+                        },
+                        items: <String>['Author', 'Title', 'Age']
+                            .map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value, style: TextStyle(color: Colors.black)),
+                          );
+                        }).toList(),
+                        style: TextStyle(color: Colors.black),
+                        icon: Icon(Icons.arrow_drop_down, color: Colors.white),
+                        underline: Container(),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  const SizedBox(width: 20),
-                  Text(
-                    'Select Category:',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.pink,
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.black),
-                      borderRadius: BorderRadius.circular(20),
-                      color: Colors.pink,
-                    ),
-                    child: DropdownButton<String>(
-                      value: _selectedCategory,
-                      onChanged: (String? value) {
-                        setState(() {
-                          _selectedCategory = value!;
-                        });
-                      },
-                      items: <String>['Author', 'Title', 'Age']
-                          .map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value, style: TextStyle(color: Colors.black)),
-                        );
-                      }).toList(),
-                      style: TextStyle(color: Colors.black),
-                      icon: Icon(Icons.arrow_drop_down, color: Colors.white),
-                      underline: Container(),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
                   Expanded(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -276,7 +282,6 @@ class _SearchPageState extends State<SearchPage> {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 20),
                 ],
               ),
               const SizedBox(height: 20),
