@@ -20,13 +20,13 @@ class HomeScreen extends StatelessWidget {
           child: SingleChildScrollView(
           child: Row(
             children: [
-              Expanded(
+               const Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.all(20.0),
+                      padding:  EdgeInsets.all(20.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -69,29 +69,46 @@ class HomeScreen extends StatelessWidget {
                     ],
                   ),
                   width: double.infinity,
-                  margin: const EdgeInsets.all(20),
-                  padding: const EdgeInsets.all(20),
+                  margin: const EdgeInsets.all(15),
+                  padding: const EdgeInsets.all(15),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Row(
+                      const Row(
                         children: [
                           Expanded(
                             child: Center(
                             child: Text(
-                        "Let's get started",
+                        "Let's get",
                         style: TextStyle(
                           color: Color(0xFFFF6B6C),
                           fontFamily: 'Kavoon',
                           fontWeight: FontWeight.bold,
-                          fontSize: 40,
+                          fontSize: 36,
                         ),
                       ),
                           ),
                           ),
                         ],
                       ),
-                      Row(
+                      const Row(
+                        children: [
+                          Expanded(
+                            child: Center(
+                            child: Text(
+                        "started",
+                        style: TextStyle(
+                          color: Color(0xFFFF6B6C),
+                          fontFamily: 'Kavoon',
+                          fontWeight: FontWeight.bold,
+                          fontSize: 36,
+                        ),
+                      ),
+                          ),
+                          ),
+                        ],
+                      ),
+                      const Row(
                         children: [
                           Expanded(
                             child: Center( 
@@ -101,14 +118,14 @@ class HomeScreen extends StatelessWidget {
                           color: Color(0xFFFF6B6C),
                           fontFamily: 'Kavoon',
                           fontWeight: FontWeight.bold,
-                          fontSize: 40,
+                          fontSize: 36,
                         ),
                       ),
                           ),
                           ),
                         ],
                       ),
-                      SizedBox(height: 20),
+                      SizedBox(height: 15),
                       ElevatedButton(
                         onPressed: () {
                           // Navigate to the register page
@@ -118,7 +135,7 @@ class HomeScreen extends StatelessWidget {
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Color(0xFFFF6B6C),
-                          padding: EdgeInsets.symmetric(vertical: 15, horizontal: 30),
+                          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(4),
                           ),
@@ -132,14 +149,23 @@ class HomeScreen extends StatelessWidget {
                           ),
                         ),
                       ),
-                      SizedBox(height: 40),
-                      Text(
+                      SizedBox(height: 15),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Expanded(
+                        child: Center(
+                          child: Text(
                         "Already have an account?",
                         style: TextStyle(
                           color: Colors.pink.shade200,
-                          fontSize: 24,
+                          fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),
+                      ),
+                        ),
+                        ),
+                      ],
                       ),
                       ElevatedButton(
                         onPressed: () {
@@ -150,7 +176,7 @@ class HomeScreen extends StatelessWidget {
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.pink.shade200,
-                          padding: EdgeInsets.symmetric(vertical: 15, horizontal: 30),
+                          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(4),
                           ),
