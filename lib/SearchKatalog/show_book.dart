@@ -1,4 +1,3 @@
-// File: lib/screens/search_katalog/show_book.dart
 import 'package:flutter/material.dart';
 import 'package:bookmates_mobile/models/buku.dart';
 
