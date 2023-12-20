@@ -36,7 +36,7 @@ class _SearchPageState extends State<SearchPage> {
         // Jika lebar layar kurang dari 600 (misalnya, handphone), set crossAxisCount menjadi 1
         if (constraints.maxWidth < 600) {
           crossAxisCount = 1;
-          childAspectRatio = 2.0;
+          childAspectRatio = 2.5;
         }
 
         return SingleChildScrollView(
@@ -50,7 +50,7 @@ class _SearchPageState extends State<SearchPage> {
                   crossAxisCount: crossAxisCount,
                   crossAxisSpacing: 10.0,
                   mainAxisSpacing: 10.0,
-                  childAspectRatio: childAspectRatio,
+                  childAspectRatio: 3.2,
                 ),
                 itemCount: _searchResults.length,
                 itemBuilder: (context, index) {
