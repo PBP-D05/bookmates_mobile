@@ -18,20 +18,13 @@ class HomeScreen extends StatelessWidget {
         color: Colors.pink.shade200, // Set the background color to pink
         child: Center(
           child: SingleChildScrollView(
-          child: Row(
-            children: [
-               const Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
                       padding:  EdgeInsets.all(20.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                        'Hi',
+                      child: Text(
+                        'Hi There!',
                         style: TextStyle(
                           color: Colors.white,
                           fontFamily: 'Kavoon',
@@ -39,21 +32,9 @@ class HomeScreen extends StatelessWidget {
                           fontSize: 50,
                         ),
                       ),
-                      Text(
-                          'There!',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontFamily: 'Kavoon',
-                            fontWeight: FontWeight.bold,
-                            fontSize: 50,
-                          ),
-                        ),
-                        ],
                       ),
-                    ),
-                  ],
-                ),
-              ),
+                      Row(children: [
+                         
               Expanded(
                 child: Container(
                   decoration: BoxDecoration(
@@ -79,24 +60,7 @@ class HomeScreen extends StatelessWidget {
                           Expanded(
                             child: Center(
                             child: Text(
-                        "Let's get",
-                        style: TextStyle(
-                          color: Color(0xFFFF6B6C),
-                          fontFamily: 'Kavoon',
-                          fontWeight: FontWeight.bold,
-                          fontSize: 36,
-                        ),
-                      ),
-                          ),
-                          ),
-                        ],
-                      ),
-                      const Row(
-                        children: [
-                          Expanded(
-                            child: Center(
-                            child: Text(
-                        "started",
+                        "Let's get started",
                         style: TextStyle(
                           color: Color(0xFFFF6B6C),
                           fontFamily: 'Kavoon',
@@ -196,8 +160,10 @@ class HomeScreen extends StatelessWidget {
               ),
             ],
           ),
+                  ],
           ),
         ),
+      ),
       ),
     );
   }
