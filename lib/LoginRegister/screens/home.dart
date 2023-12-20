@@ -17,6 +17,7 @@ class HomeScreen extends StatelessWidget {
       body: Container(
         color: Colors.pink.shade200, // Set the background color to pink
         child: Center(
+          child: SingleChildScrollView(
           child: Row(
             children: [
               Expanded(
@@ -129,6 +130,7 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
             ],
+          ),
           ),
         ),
       ),
