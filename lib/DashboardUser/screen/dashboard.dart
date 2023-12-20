@@ -55,8 +55,6 @@ class _DashboardPageState extends State<DashboardPage> {
     var response =
         await http.get(url, headers: {"Content-Type": "application/json"});
     var data = jsonDecode(utf8.decode(response.bodyBytes));
-    Pengguna user = Pengguna.fromJson(data);
-    String username = data.user.fields.toString();
     return data;
   }
 
