@@ -47,7 +47,7 @@ class Fields {
     int maxAge;
     String imageUrl;
     String desc;
-    int user;
+    String user;
 
     Fields({
         required this.judul,
@@ -70,7 +70,7 @@ class Fields {
         maxAge: json["max_age"],
         imageUrl: json["image_url"],
         desc: json["desc"],
-        user: json["user"],
+        user: json["user"]?? "",
     );
 
     Map<String, dynamic> toJson() => {
