@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:bookmates_mobile/models/buku.dart';
 import 'show_book.dart';
-import 'package:bookmates_mobile/DashboardUser/screen/sidebar.dart'; // Import the file containing LeftDrawer
+import 'package:bookmates_mobile/DashboardUser/screen/sidebar.dart'; 
 
 class SearchPage extends StatefulWidget {
   const SearchPage({Key? key}) : super(key: key);
@@ -28,30 +28,42 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Widget _buildSearchResults() {
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          const SizedBox(height: 10),
-          GridView.builder(
-            shrinkWrap: true,
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 10.0,
-              mainAxisSpacing: 10.0,
-              childAspectRatio: MediaQuery.of(context).size.width /
-                  (MediaQuery.of(context).size.height / 1.5),
-            ),
-            itemCount: _searchResults.length,
-            itemBuilder: (context, index) {
-              Buku buku = _searchResults[index];
-              String cleanedDescription = cleanDescription(buku.fields.desc);
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        int crossAxisCount = 2;
+        double childAspectRatio = 2.0;
 
-              return _buildBookCard(buku, cleanedDescription);
-            },
+        // Jika lebar layar kurang dari 600 (misalnya, handphone), set crossAxisCount menjadi 1
+        if (constraints.maxWidth < 600) {
+          crossAxisCount = 1;
+          childAspectRatio = 2.0;
+        }
+
+        return SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              const SizedBox(height: 6),
+              GridView.builder(
+                shrinkWrap: true,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: crossAxisCount,
+                  crossAxisSpacing: 10.0,
+                  mainAxisSpacing: 10.0,
+                  childAspectRatio: childAspectRatio,
+                ),
+                itemCount: _searchResults.length,
+                itemBuilder: (context, index) {
+                  Buku buku = _searchResults[index];
+                  String cleanedDescription = cleanDescription(buku.fields.desc);
+
+                  return _buildBookCard(buku, cleanedDescription);
+                },
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -163,7 +175,7 @@ class _SearchPageState extends State<SearchPage> {
     }
 
     return SingleChildScrollView(
-      scrollDirection: Axis.horizontal, // Tambahkan Axis.horizontal
+      scrollDirection: Axis.horizontal,
       child: Row(
         children: stars,
       ),
@@ -178,7 +190,7 @@ class _SearchPageState extends State<SearchPage> {
         backgroundColor: Colors.pink,
         foregroundColor: Colors.white,
       ),
-      drawer: LeftDrawer(), // Add the LeftDrawer as a drawer
+      drawer: LeftDrawer(),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(10.0),
