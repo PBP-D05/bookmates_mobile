@@ -145,7 +145,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
                 // Sending the registration request
                 final response = await request.post(
-                  "http://127.0.0.1:8000/auth/register/",
+                  "https://booksmate-d05-tk.pbp.cs.ui.ac.id/auth/register/",
                   {
                     'username': username,
                     'password': password,

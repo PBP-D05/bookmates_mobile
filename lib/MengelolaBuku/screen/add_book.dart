@@ -234,7 +234,7 @@ class _BookFormPageState extends State<BookFormPage> {
                                             if (_formKey.currentState!.validate()) {
                                                 
                                                 final response = await request.postJson(
-                                                "http://127.0.0.1:8000/editbuku/add-book-flutter/",
+                                                "https://booksmate-d05-tk.pbp.cs.ui.ac.id/editbuku/add-book-flutter/",
                                                 jsonEncode(<String, String>{
                                                     'judul': _judul,
                                                     'author': _author,

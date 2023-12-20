@@ -51,7 +51,7 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   Future<Pengguna> fetch() async {
-    var url = Uri.parse('http://127.0.0.1:8000/auth/login/');
+    var url = Uri.parse('https://booksmate-d05-tk.pbp.cs.ui.ac.id/auth/login/');
     var response =
         await http.get(url, headers: {"Content-Type": "application/json"});
     var data = jsonDecode(utf8.decode(response.bodyBytes));
@@ -62,7 +62,7 @@ class _DashboardPageState extends State<DashboardPage> {
 
   Future<List<Buku>> fetchData() async {
     try {
-      var url = Uri.parse('http://127.0.0.1:8000/editbuku/get-books-json/');
+      var url = Uri.parse('https://booksmate-d05-tk.pbp.cs.ui.ac.id/editbuku/get-books-json/');
       var response = await http.get(
         url,
         headers: {"Content-Type": "application/json"},
@@ -107,7 +107,7 @@ class _DashboardPageState extends State<DashboardPage> {
                 try {
                   // print(request.jsonData.toString());
                   final response = await request.post(
-                    'http://127.0.0.1:8000/update_user_name/',
+                    'https://booksmate-d05-tk.pbp.cs.ui.ac.id/update_user_name/',
                     {'name': newName, 'id': request.jsonData['id'].toString()},
                   );
                   if (context.mounted && response['status']) {

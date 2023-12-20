@@ -20,7 +20,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
   Widget build(BuildContext context) {
     final request = context.watch<CookieRequest>();
     Future<List<Reviewer>> data = request
-    .get('http://127.0.0.1:8000/challenge/ranking/')
+    .get('https://booksmate-d05-tk.pbp.cs.ui.ac.id/challenge/ranking/')
     .then((value) {
       if (value == null) {
         return [];

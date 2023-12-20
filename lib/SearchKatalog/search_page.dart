@@ -123,7 +123,7 @@ class _SearchPageState extends State<SearchPage> {
 
   Future<void> performSearch() async {
     final response = await http.post(
-      Uri.parse("http://localhost:8000/searchbuku/perform_search/"),
+      Uri.parse("https://booksmate-d05-tk.pbp.cs.ui.ac.id/searchbuku/perform_search/"),
       body: {
         'category': _selectedCategory.toLowerCase(),
         'keyword': _searchController.text,
